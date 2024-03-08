@@ -10,9 +10,19 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
-
-import { getServerAuthSession } from "@/server/auth";
+import { createClient } from "@/server/auth/server";
 import { db } from "@/server/db";
+
+export const getServerSession = async () => {
+  const supabase = createClient();
+  const { data, error } = await supabase.auth.getSession()
+
+  if (error ?? !data.session ?? !data.session.user) {
+    return null;
+  }
+
+  return data.session;
+}
 
 /**
  * 1. CONTEXT
@@ -27,11 +37,8 @@ import { db } from "@/server/db";
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
-  const session = await getServerAuthSession();
-
   return {
     db,
-    session,
     ...opts,
   };
 };
@@ -83,19 +90,16 @@ export const publicProcedure = t.procedure;
 /**
  * Protected (authenticated) procedure
  *
- * If you want a query or mutation to ONLY be accessible to logged in users, use this. It verifies
- * the session is valid and guarantees `ctx.session.user` is not null.
+ * If you want a query or mutation to ONLY be accessible to logged in users, use this.
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
-  if (!ctx.session || !ctx.session.user) {
+export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
+  const session = await getServerSession()
+
+  if (!session?.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
-  return next({
-    ctx: {
-      // infers the `session` as non-nullable
-      session: { ...ctx.session, user: ctx.session.user },
-    },
-  });
+
+  return next({ ctx });
 });
