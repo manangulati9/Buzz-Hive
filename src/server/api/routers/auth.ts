@@ -38,14 +38,15 @@ export const authRouter = createTRPCRouter({
 
       const { error, data } = await supabase.auth.signUp({ email: input.email, password: input.password })
 
-      if (error) {
-        throw new Error(error.message)
+      if (error || !data.session || !data.user) {
+        throw new Error((error as Error)?.message || "Session or user doesn't exist");
       }
 
       const newUser = {
         name: input.name,
         email: input.email,
         username: input.username,
+        id: data.user.id,
       } satisfies typeof users.$inferInsert
 
       await ctx.db.insert(users).values(newUser)
@@ -68,5 +69,6 @@ export const authRouter = createTRPCRouter({
       console.error(error)
       return null;
     }
-  })
+  }),
+
 });
