@@ -6,15 +6,27 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useRef } from 'react'
+
+import { useOnClickOutside } from 'usehooks-ts';
 
 function Navbar() {
-  const [isCliked, setisClicked] = useState(true);
+  const [isCliked, setisClicked] = useState(false);
   const [isHovering, setisHovering] = useState(true);
   const pathname = usePathname();
+
+  const ref = useRef(null)
+
+  const handleClickOutside = () => {
+    setisClicked(true);
+  }
+
+
+  useOnClickOutside(ref, handleClickOutside)
   return (
-    <div className='h-full p-4'>
-      <Menu color='white' onClick={() => setisClicked(!isCliked)} className='md:hidden' />
-      <div className={cn("fixed left-0 top-0 w-60 h-full  bg-[url('/honeycombbg.svg')] bg-center bg-cover border-r-[0.5px] border-opacity-50 transition-all duration-300", {
+    <div className='h-full p-4 z-50'>
+      <Menu color='white' onClick={() => setisClicked(!isCliked)} className='fixed top-4 left-4 md:hidden z-50' />
+      <div ref={ref} className={cn("fixed left-0 top-0 w-60 h-full  backdrop-blur drop-shadow-[0_35px_35px_rgba(1,1,1,1.25)] border-opacity-50 transition-all duration-300 z-50", {
         ["-translate-x-full opacity-0 md:scale-100 md:opacity-100 md:translate-x-0 w-18"]: isCliked,
         ["translate-x-0 opacity-100  "]: !isCliked,
       })} onMouseEnter={() => setisHovering(false)} onMouseLeave={() => setisHovering(true)}>
@@ -60,16 +72,6 @@ function Navbar() {
                   {!isCliked && (
                 <p className={cn('text-lg')}>Notications</p>)}
                 </Link>
-                <div className={cn('flex justify-end', {
-                  ["translate-x-2 rotate-180"]: isCliked,
-                  [" px-4 translate-x-0 rotate-0"]: !isCliked,
-                })} onClick={() => setisClicked(!isCliked)}>
-
-                  <ChevronLeftCircle color='white' size={25} className={cn('hover:scale-110 transition-all duration-500 cursor-pointer', {
-                    ["md:opacity-0"]: isHovering,
-                    ["opacity-100"]: !isHovering,
-                  })} />
-                </div>
               </div>
               <Link id='Items' className={cn('flex space-x-2 transition-color duration-300  p-5 h-12 rounded-full   hover:bg-yellow-400 hover:text-black items-center font-semibold text-white', {
                 ["p-1 items-center justify-center  h-9 w-9"]: isCliked,
@@ -90,6 +92,16 @@ function Navbar() {
                 <p className={cn('text-lg')}>Trending</p>)}
               </Link>
             </div>
+            <div className={cn('flex justify-center items-center z-50', {
+                  ["rotate-180"]: isCliked,
+                  [" px-4 rotate-0"]: !isCliked,
+                })} onClick={() => setisClicked(!isCliked)}>
+
+                  <ChevronLeftCircle color='white' size={40} className={cn('hover:scale-110 transition-all duration-500 cursor-pointer z-50', {
+                    ["md:opacity-0 opacity-100"]: isHovering,
+                    ["opacity-100"]: !isHovering,
+                  })} />
+                </div>
 
             <div className={cn('px-5', {
               ["px-2"]: isCliked

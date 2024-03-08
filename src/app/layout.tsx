@@ -23,7 +23,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`font-sans ${inter.variable}`}>
+      <body className={`font-sans bg-[url("/bg.svg")] bg-cover bg-center ${inter.variable}`}>
         <TRPCReactProvider>
           <Navbar/>
           {children}
