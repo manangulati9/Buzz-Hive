@@ -14,9 +14,9 @@ function Navbar() {
   return (
     <div className='h-full p-4'>
       <Menu color='white' onClick={() => setisClicked(!isCliked)} className='md:hidden' />
-      <div className={cn("absolute left-0 top-0 h-full  bg-[url('/honeycombbg.svg')] bg-center bg-cover border-r-[0.5px] border-opacity-50 transition-all duration-300", {
+      <div className={cn("fixed left-0 top-0 w-60 h-full  bg-[url('/honeycombbg.svg')] bg-center bg-cover border-r-[0.5px] border-opacity-50 transition-all duration-300", {
         ["-translate-x-full opacity-0 md:scale-100 md:opacity-100 md:translate-x-0 w-18"]: isCliked,
-        ["translate-x-0 opacity-100  w-60"]: !isCliked,
+        ["translate-x-0 opacity-100  "]: !isCliked,
       })} onMouseEnter={() => setisHovering(false)} onMouseLeave={() => setisHovering(true)}>
         <div className='h-full backdrop-blur-sm flex flex-col pt-20 pb-5'>
           <div id='logo' className='flex items-center justify-center space-x-3'>
