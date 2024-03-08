@@ -38,8 +38,8 @@ export const authRouter = createTRPCRouter({
 
       const { error, data } = await supabase.auth.signUp({ email: input.email, password: input.password })
 
-      if (error || !data.session || !data.user) {
-        throw new Error((error as Error)?.message || "Session or user doesn't exist");
+      if (error ?? !data.session ?? !data.user) {
+        throw new Error((error as Error).message ?? "Session or user doesn't exist");
       }
 
       const newUser = {

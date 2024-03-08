@@ -17,7 +17,7 @@ export const getServerSession = async () => {
   const supabase = createClient();
   const { data, error } = await supabase.auth.getSession()
 
-  if (error || !data.session || !data.session.user) {
+  if (error ?? !data.session ?? !data.session.user) {
     return null;
   }
 
@@ -97,7 +97,7 @@ export const publicProcedure = t.procedure;
 export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
   const session = await getServerSession()
 
-  if (!session || !session.user) {
+  if (!session?.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
