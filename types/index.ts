@@ -7,5 +7,10 @@ export interface PostsProps {
     imageurl : string
     commentscount : number
     likescount : number
-    sharecount : number
+    }
+export interface MessageProps {
+    username : string
+    userlogo : string
+    text : string
+    verified : boolean
     }

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function AuthenticationPage() {
   return (
-    <>
+    <div className="h-[100dvh]">
       <div className="md:hidden">
         <Image
           src="/examples/authentication-light.png"
@@ -99,6 +99,6 @@ export default function AuthenticationPage() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }

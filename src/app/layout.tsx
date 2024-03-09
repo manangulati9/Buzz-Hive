@@ -23,7 +23,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${roboto_mono.variable}`}>
+      <body className={`bg-[#030712] ${roboto_mono.variable}`}>
         <TRPCReactProvider>
           {children}
         </TRPCReactProvider>
