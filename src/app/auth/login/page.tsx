@@ -18,7 +18,7 @@ export default function AuthenticationPage() {
           buttonVariants({ variant: "outline" }),
           "w-fit absolute top-2 md:top-8 md:right-8 right-0"
         )}>
-        Login
+        Sign-up
       </Link>
       <div className={cn("flex items-center w-full flex-col space-y-4 justify-center md:p-4 lg:p-8")}>
         <div className="space-y-2 text-center">
