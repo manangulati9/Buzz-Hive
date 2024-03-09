@@ -23,7 +23,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable}`}>
+      <body className={`bg-[#030712] ${inter.variable}`}>
         <TRPCReactProvider>
           {children}
         </TRPCReactProvider>
