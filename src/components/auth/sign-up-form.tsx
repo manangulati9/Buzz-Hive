@@ -21,6 +21,7 @@ import { Icons } from "../ui/icons"
 import { signUpSchema } from "@/lib/zodSchemas"
 import { RouterOutputs } from "@/server/api/root"
 import { CheckCircle, XCircle } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 type UsernameDescProps = {
   data: RouterOutputs['auth']['isUsernameAvailable'] | undefined,
@@ -40,14 +41,16 @@ export function SignUpForm() {
     },
   })
 
+  const router = useRouter();
   const username = form.watch("username");
   const [lastUsername, setLastUsername] = React.useState(username);
   const { isFetching, data, refetch } = api.auth.isUsernameAvailable.useQuery(username, { keepPreviousData: true, enabled: false });
 
-  const { mutate, isLoading } = api.auth.signUpWithEmail.useMutation();
+  const { mutateAsync: mutate, isLoading } = api.auth.signUpWithEmail.useMutation();
 
-  const onSubmit = (values: z.infer<typeof signUpSchema>) => {
-    mutate(values)
+  const onSubmit = async (values: z.infer<typeof signUpSchema>) => {
+    await mutate(values)
+    router.push("/dashboard")
   }
 
   const verify = () => {
@@ -151,7 +154,7 @@ export function SignUpForm() {
         <Button className="max-w-xs w-full" type="submit">
           {isLoading ?
             <>
-              <Icons.spinner className="h-4 w-4" />
+              <Icons.spinner />
               Submitting...
             </>
             : "Submit"}

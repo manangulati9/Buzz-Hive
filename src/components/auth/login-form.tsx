@@ -91,7 +91,7 @@ export function LoginForm() {
       <div className="flex gap-4">
         <Button className="w-full" onClick={githubSignIn} variant="outline" type="button" disabled={isLoading}>
           {isLoading ? (
-            <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+            <Icons.spinner />
           ) : (
             <Icons.gitHub className="mr-2 h-4 w-4" />
           )}{" "}
@@ -99,7 +99,7 @@ export function LoginForm() {
         </Button>
         <Button className="w-full" variant="outline" onClick={googleSignIn} type="button" disabled={isLoading}>
           {isLoading ? (
-            <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+            <Icons.spinner />
           ) : (
             <Icons.google className="mr-2 h-4 w-4" />
           )}{" "}

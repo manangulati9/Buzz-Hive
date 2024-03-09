@@ -22,11 +22,11 @@ export const authRouter = createTRPCRouter({
     }
   }),
 
-  signUpWithEmail: publicProcedure.input(signUpSchema).mutation(async ({ input }) => {
+  signUpWithEmail: publicProcedure.input(signUpSchema).mutation(async ({ input, ctx }) => {
     try {
       const supabase = createClient();
 
-      const { error } = await supabase.auth.signUp({
+      const { data: { user }, error } = await supabase.auth.signUp({
         email: input.email, password: input.password, options: {
           data: {
             name: input.name,
@@ -37,6 +37,17 @@ export const authRouter = createTRPCRouter({
 
       if (error) {
         throw new Error(error.message);
+      }
+
+      if (user) {
+        const newUser = {
+          name: input.name,
+          email: input.email,
+          username: input.username,
+          id: user.id,
+        } satisfies typeof users.$inferInsert
+
+        await ctx.db.insert(users).values(newUser)
       }
     } catch (error) {
       console.error(error)
