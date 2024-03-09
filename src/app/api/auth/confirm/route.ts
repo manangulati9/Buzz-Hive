@@ -1,4 +1,6 @@
 import { createClient } from '@/server/auth/server'
+import { db } from '@/server/db'
+import { users } from '@/server/db/schema'
 import { type EmailOtpType } from '@supabase/supabase-js'
 import { type NextRequest, NextResponse } from 'next/server'
 
@@ -16,12 +18,25 @@ export async function GET(request: NextRequest) {
   if (token_hash && type) {
     const supabase = createClient()
 
-    const { error } = await supabase.auth.verifyOtp({
+    const { data, error } = await supabase.auth.verifyOtp({
       type,
       token_hash,
     })
     if (!error) {
       redirectTo.searchParams.delete('next')
+
+      const { user } = data;
+
+      if (user) {
+        const newUser = {
+          name: user.user_metadata.name,
+          email: user.email!,
+          username: user.user_metadata.username,
+          id: user.id,
+        } satisfies typeof users.$inferInsert
+
+        await db.insert(users).values(newUser)
+      }
       return NextResponse.redirect(redirectTo)
     }
   }
