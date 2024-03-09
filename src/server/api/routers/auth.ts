@@ -1,23 +1,13 @@
-import { z } from "zod";
+import { loginSchema, signUpSchema } from "@/lib/zodSchemas";
 import {
   createTRPCRouter,
   publicProcedure,
 } from "@/server/api/trpc";
 import { createClient } from "@/server/auth/server";
-import { redirect } from "next/navigation";
 import { users } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
-
-export const loginSchema = z.object({
-  email: z.string().email("Invalid email id"),
-  password: z.string().min(8, "Password is too short").max(25, "Password length exceeded")
-})
-
-export const signUpSchema = loginSchema.extend({
-  name: z.string(),
-  username: z.string().min(1, "Username is too short").max(12, "Username length exceeded"),
-  confirmPassword: z.string().min(8, "Password is too short").max(25, "Password length exceeded"),
-}).refine((val) => val.password === val.confirmPassword, { message: "Passwords don't match" })
+import { redirect } from "next/navigation";
+import { z } from "zod";
 
 export const authRouter = createTRPCRouter({
   loginWithEmail: publicProcedure.input(loginSchema).mutation(async ({ input }) => {
@@ -32,29 +22,35 @@ export const authRouter = createTRPCRouter({
     }
   }),
 
-  signUpWithEmail: publicProcedure.input(signUpSchema).mutation(async ({ ctx, input }) => {
+  signUpWithEmail: publicProcedure.input(signUpSchema).mutation(async ({ input, ctx }) => {
     try {
       const supabase = createClient();
 
-      const { error, data } = await supabase.auth.signUp({ email: input.email, password: input.password })
+      const { data: { user }, error } = await supabase.auth.signUp({
+        email: input.email, password: input.password, options: {
+          data: {
+            name: input.name,
+            username: input.username,
+          },
+        }
+      })
 
-      if (error ?? !data.session ?? !data.user) {
-        throw new Error((error as Error).message ?? "Session or user doesn't exist");
+      if (error) {
+        throw new Error(error.message);
       }
 
-      const newUser = {
-        name: input.name,
-        email: input.email,
-        username: input.username,
-        id: data.user.id,
-      } satisfies typeof users.$inferInsert
+      if (user) {
+        const newUser = {
+          name: input.name,
+          email: input.email,
+          username: input.username,
+          id: user.id,
+        } satisfies typeof users.$inferInsert
 
-      await ctx.db.insert(users).values(newUser)
-
-      return data.user;
+        await ctx.db.insert(users).values(newUser)
+      }
     } catch (error) {
       console.error(error)
-      return null;
     }
   }),
 

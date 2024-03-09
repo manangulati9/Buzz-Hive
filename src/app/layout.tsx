@@ -1,13 +1,13 @@
 import "@/styles/globals.css";
 
-import { Roboto_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 
 import { TRPCReactProvider } from "@/trpc/react";
 
-const roboto_mono = Roboto_Mono({
+const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-roboto_mono'
+  variable: '--font-inter'
 })
 
 export const metadata = {
@@ -23,7 +23,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`bg-[#030712] ${roboto_mono.variable}`}>
+      <body className={` bg-[#030712] ${inter.variable}`}>
         <TRPCReactProvider>
           {children}
         </TRPCReactProvider>
