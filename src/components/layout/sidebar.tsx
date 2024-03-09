@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, ChevronLeftCircle, Compass, Home, LogIn, LogOutIcon, Menu, TrendingUp, User2 } from 'lucide-react';
+import { Bell, ChevronLeftCircle, Compass, Home, LogIn, LogOutIcon, Menu, MessageCircle, TrendingUp, User2 } from 'lucide-react';
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
@@ -10,7 +10,7 @@ import { useRef } from 'react'
 
 import { useOnClickOutside } from 'usehooks-ts';
 
-export default function Navbar() {
+export default function Sidebar() {
   const [isClicked, setisClicked] = useState(false);
   const [isHovering, setisHovering] = useState(true);
   const pathname = usePathname();
@@ -59,11 +59,11 @@ export default function Navbar() {
               <Link id='Items' className={cn('flex space-x-2 transition-color duration-300  p-5 h-12 rounded-full   hover:bg-yellow-400 hover:text-black items-center font-semibold text-white', {
                 ["p-1 items-center justify-center  h-9 w-9"]: isClicked,
                 ["justify-start "]: !isClicked,
-                ["bg-yellow-400 text-black border-2"]: pathname === '/dashboard/explore',
-              })} href={'/dashboard/explore'}>
-                <Compass />
+                ["bg-yellow-400 text-black border-2"]: pathname === '/dashboard/messages',
+              })} href={'/dashboard/messages'}>
+                <MessageCircle />
                 {!isClicked && (
-                  <p className={cn('text-lg')}>Explore</p>)}
+                  <p className={cn('text-lg')}>Messages</p>)}
               </Link>
               <div className='flex items-center -space-x-1'>
                 <Link id='Items' className={cn('flex space-x-2 transition-color duration-300  p-5 h-12 rounded-full   hover:bg-yellow-400 hover:text-black items-center font-semibold text-white', {
@@ -109,7 +109,7 @@ export default function Navbar() {
             <div className={cn('px-5', {
               ["px-2"]: isClicked
             })}>
-              <Link id='Items' className='flex space-x-2 justify-center transition-color duration-300 w-full h-12 rounded-full border-2   hover:bg-yellow-400 hover:text-black items-center font-semibold text-white' href={'/login'}>
+              <Link id='Items' className='flex space-x-2 justify-center transition-color duration-300 w-full h-12 rounded-full border-2   hover:bg-yellow-400 hover:text-black items-center font-semibold text-white' href={'/auth/login'}>
                 <LogIn />
                 {!isClicked && (
                   <p className={cn('text-lg')}>Sign In</p>)}
