@@ -5,6 +5,7 @@ import {
   type inferReactQueryProcedureOptions,
 } from '@trpc/react-query';
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
+import { commentRouter } from "./routers/comments";
 /**
  * This is the primary router for your server.
  *
@@ -13,6 +14,7 @@ import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 export const appRouter = createTRPCRouter({
   post: postRouter,
   auth: authRouter,
+  comment: commentRouter,
 });
 
 // infer the types for your router

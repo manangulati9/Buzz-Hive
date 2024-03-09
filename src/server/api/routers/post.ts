@@ -3,7 +3,7 @@ import {
   createTRPCRouter,
   protectedProcedure,
 } from "@/server/api/trpc";
-import { comments, likes, postImages, posts } from "@/server/db/schema";
+import { likes, postImages, posts } from "@/server/db/schema";
 import { createClient } from "@/server/auth/server";
 import { nanoid } from 'nanoid'
 import { TRPCError } from "@trpc/server";
@@ -50,21 +50,18 @@ export const postRouter = createTRPCRouter({
   }
   ),
 
+  getPostLikes: protectedProcedure.input(z.number()).query(async ({ ctx, input }) => {
+    const [likesCount] = await ctx.db.select({ value: count() }).from(likes).where(eq(likes.postId, input)).groupBy(likes.postId);
+    return likesCount ? likesCount.value : null;
+  }),
+
   likePost: protectedProcedure.input(z.number()).mutation(async ({ ctx, input }) => {
     await ctx.db.insert(likes).values({ authorId: ctx.user.id, postId: input, })
+    const [updatedLikeCount] = await ctx.db.select({ value: count() }).from(likes).where(eq(likes.postId, input)).groupBy(likes.postId);
+    return updatedLikeCount ? updatedLikeCount.value : null;
   }),
 
   deletePost: protectedProcedure.input(z.number()).mutation(async ({ ctx, input }) => {
     await ctx.db.delete(posts).where(eq(posts.id, input));
   }),
-
-  createComment: protectedProcedure.input(z.object({ content: z.string(), postId: z.number() })).mutation(async ({ ctx, input }) => {
-    const [checkPostId] = await ctx.db.select({ value: count() }).from(posts).where(eq(posts.id, input.postId));
-
-    if (checkPostId?.value === 1) {
-      await ctx.db.insert(comments).values({ content: input.content, postId: input.postId, userId: ctx.user.id })
-      const [updatedCommentCount] = await ctx.db.select({ value: count() }).from(comments).where(eq(posts.id, input.postId)).groupBy(posts.id);
-      return updatedCommentCount ? updatedCommentCount.value : null;
-    }
-  })
 });
