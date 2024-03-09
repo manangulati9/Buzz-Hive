@@ -129,7 +129,7 @@ function page() {
         </div>
       </div>
       <div className="flex flex-col space-y-14">{posts?.map((post) => (
-        <PostCard post={post} />
+        <PostCard key={post.username} post={post} />
       ))}</div>
       </div>
       <div className='md:flex flex-col hidden'>
@@ -141,7 +141,7 @@ function page() {
       </div>
       <div className="flex flex-col h-[380px] overflow-scroll space-y-10 my-16">
       {messages?.map((message) => (
-        <MessageTab message={message}  />
+        <MessageTab key={message.username} message={message}  />
       ))}
       </div>
       </div>
