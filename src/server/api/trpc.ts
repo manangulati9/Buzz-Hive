@@ -12,13 +12,14 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 import { createClient } from "@/server/auth/server";
 import { db } from "@/server/db";
+import type { CreateNextContextOptions } from '@trpc/server/adapters/next';
 
 export const getServerSession = async () => {
   const supabase = createClient();
   const { data, error } = await supabase.auth.getSession()
 
-  if (error ?? !data.session ?? !data.session.user) {
-    return null;
+  if (error) {
+    throw new Error("Couldn't get server session");
   }
 
   return data.session;
@@ -36,13 +37,19 @@ export const getServerSession = async () => {
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = async (opts: { headers: Headers }) => {
+
+export const createTRPCContext = async (opts: CreateNextContextOptions) => {
+  const session = await getServerSession();
+
   return {
     db,
+    session,
+    user: session?.user,
     ...opts,
   };
 };
 
+type Context = Awaited<ReturnType<typeof createTRPCContext>>;
 /**
  * 2. INITIALIZATION
  *
@@ -50,7 +57,7 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
  * ZodErrors so that you get typesafety on the frontend if your procedure fails due to validation
  * errors on the backend.
  */
-const t = initTRPC.context<typeof createTRPCContext>().create({
+const t = initTRPC.context<Context>().create({
   transformer: superjson,
   errorFormatter({ shape, error }) {
     return {
@@ -94,12 +101,19 @@ export const publicProcedure = t.procedure;
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
-  const session = await getServerSession()
 
-  if (!session?.user) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
+export const protectedProcedure = t.procedure.use((opts) => {
+  if (!opts.ctx?.session?.user.email) {
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+    });
   }
 
-  return next({ ctx });
+  return opts.next({
+    ctx: {
+      // Infers the `session` as non-nullable
+      session: opts.ctx.session,
+      user: opts.ctx.session.user,
+    },
+  });
 });
