@@ -1,13 +1,10 @@
 import { CameraIcon, DotIcon, PhoneIcon, UserIcon } from "lucide-react";
 import Image from "next/image";
-import { MessageProps } from "@/types";
 
-interface MessageTabProps{
-  message : MessageProps ; 
-}
 
-export default function Component({message} : MessageTabProps) {
-  const {username, userlogo, text, verified} = message;
+
+export default function Component({message} : { message : {username : string, userlogo: string, text: string}}) {
+  const {username, userlogo, text} = message;
     return (
       <div className="flex flex-col h-fit border rounded-lg w-[20rem] md:w-full max-w-sm  dark:border-gray-800 backdrop-blur-3xl bg-[#1F2937] bg-opacity-50">
         <div className="flex-1 p-4 grid gap-4 text-sm dark:bg-gray-950">
