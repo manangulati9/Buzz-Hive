@@ -70,7 +70,7 @@ export default function Sidebar() {
                   ["p-1 items-center justify-center h-9 w-9"]: isClicked,
                   ["justify-start "]: !isClicked,
                   ["bg-yellow-400 text-black border-2"]: pathname === '/dashboard/notifications',
-                })} href={'/dashboard/notications'}>
+                })} href={'/dashboard/notifications'}>
                   <Bell />
                   {!isClicked && (
                     <p className={cn('text-lg')}>Notifications</p>)}
