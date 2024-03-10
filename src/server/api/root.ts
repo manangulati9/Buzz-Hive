@@ -1,20 +1,24 @@
-import { postRouter } from "@/server/api/routers/post";
+import { postsRouter } from "@/server/api/routers/posts";
 import { createTRPCRouter } from "@/server/api/trpc";
 import { authRouter } from "./routers/auth";
 import {
   type inferReactQueryProcedureOptions,
 } from '@trpc/react-query';
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
-import { commentRouter } from "./routers/comments";
+import { commentsRouter } from "./routers/comments";
+import { likesRouter } from "./routers/likes";
+import { usersRouter } from "./routers/users";
 /**
  * This is the primary router for your server.
  *
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  post: postRouter,
+  posts: postsRouter,
   auth: authRouter,
-  comment: commentRouter,
+  comments: commentsRouter,
+  likes: likesRouter,
+  users: usersRouter,
 });
 
 // infer the types for your router

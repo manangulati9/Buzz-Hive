@@ -15,7 +15,7 @@ export default function AuthRouteLayout({ children }: { children: ReactNode }) {
       <div className="hidden relative flex-col p-10 h-full lg:flex dark:border-r bg-muted">
         <Image src="/bg.png" alt="" fill className="object-cover object-center" />
         <div className="relative z-20 mt-auto">
-          <p className="text-lg">
+          <p className="text-lg text-primary-foreground">
             Get buzzing with BuzzHive, where every post is a hive of activity! 🐝
           </p>
         </div>
