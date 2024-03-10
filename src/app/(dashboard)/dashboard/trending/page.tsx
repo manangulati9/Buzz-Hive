@@ -34,7 +34,7 @@ async function Page() {
   return (
     <div className='min-h-screen mx-auto justify-around py-10 text-foreground flex container w-full max-w-none relative'>
 
-      <div className='   '>
+      <div className=' w-full  '>
         <div className='mx-auto w-[18rem]  md:w-full max-w-xl  h-fit drop-shadow-[0_0_35px_rgba(1,1,1,1.25)]  rounded-xl flex  justify-between py-2 px-6 my-5 backdrop-blur-3xl bg-[#1F2937] bg-opacity-50'>
           <p className='font-bold'>
             Trending
@@ -44,7 +44,7 @@ async function Page() {
         <PostBuzz />
         <div className="flex flex-col space-y-14">{posts.map((post) => (
           <PostCard key={post.id} post={post} />
-        ))}P</div>
+        ))}</div>
       </div>
       <div className='md:flex flex-col items-center hidden absolute right-8  md:w-full max-w-sm'>
         <div className=' mx-auto w-[20rem] md:w-full max-w-2xl    h-fit drop-shadow-[0_0_35px_rgba(1,1,1,1.25)]  rounded-xl flex  justify-between py-2 px-6 my-5 backdrop-blur-3xl bg-[#1F2937] bg-opacity-50'>

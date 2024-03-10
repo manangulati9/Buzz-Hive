@@ -66,7 +66,7 @@ export default function Sidebar() {
           <div className='h-full flex flex-col justify-between'>
 
             <div id='Navbar items' className={cn('flex flex-col pt-10 px-4', {
-              ["space-y-8"]: isClicked,
+              ["space-y-8 items-center"]: isClicked,
               ["space-y-3"]: !isClicked,
             })}>
               <Link id='Items' className={cn('flex space-x-2 transition-color duration-300  p-5 h-12 rounded-full   hover:bg-primary hover:text-primary-foreground items-center font-semibold text-foreground', {
@@ -132,7 +132,7 @@ export default function Sidebar() {
             })}>
               {isLoggedIn ? <Button className='rounded-full flex gap-2 items-center mx-auto hover:bg-primary/80 hover:scale-110 transition-all' size='lg' onClick={handleSignOut}>
                 <LogOut className='h-4 w-4' />
-                Sign out
+                {!isClicked && (<p>Sign out</p>)}
               </Button> :
                 <Link id='Items' className='flex space-x-2 justify-center transition-color duration-300 w-full h-12 rounded-full border-2   hover:bg-primary hover:text-primary-foreground items-center font-semibold text-foreground' href='/auth/login'>
                   <LogIn />
