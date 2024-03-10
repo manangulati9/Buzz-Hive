@@ -67,4 +67,5 @@ export const authRouter = createTRPCRouter({
     }
   }),
 
+  // TODO: Add procedure to store OAuth user details to db
 });

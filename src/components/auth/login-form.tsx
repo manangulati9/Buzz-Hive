@@ -18,6 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { loginSchema } from "@/lib/zodSchemas"
 import { api } from "@/trpc/react"
 import { createClient } from "@/server/auth/client"
+import { env } from "@/env"
 
 export function LoginForm() {
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -38,12 +39,18 @@ export function LoginForm() {
   const googleSignIn = async () => {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
+      options: {
+        redirectTo: `${env.NEXT_PUBLIC_URL}/api/auth/callback`
+      }
     })
   }
 
   const githubSignIn = async () => {
     await supabase.auth.signInWithOAuth({
       provider: 'github',
+      options: {
+        redirectTo: `${env.NEXT_PUBLIC_URL}/api/auth/callback`
+      }
     })
   }
 

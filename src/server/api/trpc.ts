@@ -10,20 +10,8 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
-import { createClient } from "@/server/auth/server";
 import { db } from "@/server/db";
-import type { CreateNextContextOptions } from '@trpc/server/adapters/next';
-
-export const getServerSession = async () => {
-  const supabase = createClient();
-  const { data, error } = await supabase.auth.getSession()
-
-  if (error) {
-    throw new Error("Couldn't get server session");
-  }
-
-  return data.session;
-}
+import { createClient } from "../auth/server";
 
 /**
  * 1. CONTEXT
@@ -38,13 +26,9 @@ export const getServerSession = async () => {
  * @see https://trpc.io/docs/server/context
  */
 
-export const createTRPCContext = async (opts: CreateNextContextOptions) => {
-  const session = await getServerSession();
-
+export const createTRPCContext = async (opts: { headers: Headers }) => {
   return {
     db,
-    session,
-    user: session?.user,
     ...opts,
   };
 };
@@ -101,19 +85,18 @@ export const publicProcedure = t.procedure;
  *
  * @see https://trpc.io/docs/procedures
  */
+export const protectedProcedure = t.procedure.use(async (opts) => {
+  const supabase = createClient();
+  const { data: { session }, error } = await supabase.auth.getSession();
 
-export const protectedProcedure = t.procedure.use((opts) => {
-  if (!opts.ctx?.session?.user.email) {
-    throw new TRPCError({
-      code: 'UNAUTHORIZED',
-    });
+  if (!session ?? !session?.user) {
+    throw new TRPCError({ message: error?.message, code: "UNAUTHORIZED" })
   }
 
   return opts.next({
     ctx: {
-      // Infers the `session` as non-nullable
-      session: opts.ctx.session,
-      user: opts.ctx.session.user,
+      session,
+      user: session.user,
     },
   });
 });

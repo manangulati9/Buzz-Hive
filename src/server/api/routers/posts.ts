@@ -3,15 +3,15 @@ import {
   createTRPCRouter,
   protectedProcedure,
 } from "@/server/api/trpc";
-import { likes, postImages, posts } from "@/server/db/schema";
+import { postImages, posts } from "@/server/db/schema";
 import { createClient } from "@/server/auth/server";
 import { nanoid } from 'nanoid'
 import { TRPCError } from "@trpc/server";
-import { count, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
-export const postRouter = createTRPCRouter({
-  getAllPosts: protectedProcedure.input(z.number()).query(async ({ ctx, input }) => {
-    const postsArr = await ctx.db.select().from(posts).limit(10).offset(input * 10);
+export const postsRouter = createTRPCRouter({
+  getAllPosts: protectedProcedure.input(z.object({ page: z.number() })).query(async ({ ctx, input }) => {
+    const postsArr = await ctx.db.select().from(posts).limit(10).offset(input.page * 10);
     return postsArr;
   }),
 
@@ -49,17 +49,6 @@ export const postRouter = createTRPCRouter({
     await ctx.db.insert(postImages).values({ url: data.path, postId: newPosts[0].id })
   }
   ),
-
-  getPostLikes: protectedProcedure.input(z.number()).query(async ({ ctx, input }) => {
-    const [likesCount] = await ctx.db.select({ value: count() }).from(likes).where(eq(likes.postId, input)).groupBy(likes.postId);
-    return likesCount ? likesCount.value : null;
-  }),
-
-  likePost: protectedProcedure.input(z.number()).mutation(async ({ ctx, input }) => {
-    await ctx.db.insert(likes).values({ authorId: ctx.user.id, postId: input, })
-    const [updatedLikeCount] = await ctx.db.select({ value: count() }).from(likes).where(eq(likes.postId, input)).groupBy(likes.postId);
-    return updatedLikeCount ? updatedLikeCount.value : null;
-  }),
 
   deletePost: protectedProcedure.input(z.number()).mutation(async ({ ctx, input }) => {
     await ctx.db.delete(posts).where(eq(posts.id, input));

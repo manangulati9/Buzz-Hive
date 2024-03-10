@@ -41,7 +41,7 @@ function PostBuzz() {
 
             <div className='md:pl-16 pl-8'>
               <Select>
-                <SelectTrigger className="w-fit bg-yellow-400 text-[#322904] rounded-xl text-xs md:text-base hover:bg-yellow-500 transition-colors duration-500">
+                <SelectTrigger className="w-fit bg-primary text-[#322904] rounded-xl text-xs md:text-base hover:bg-yellow-500 transition-colors duration-500">
                   <SelectValue placeholder="Select privacy" className='placeholder:font-bold' />
                 </SelectTrigger>
                 <SelectContent>
@@ -86,13 +86,13 @@ function PostBuzz() {
                 <Smile className='text-primary hover:scale-110 transition-all duration-200 cursor-pointer' height={23} width={23} />
               </div>
               <DialogTrigger asChild>
-                <div className='border-2 flex items-center justify-center w-fit h-fit bg-yellow-400 hover:bg-yellow-500 transition-colors duration-500 rounded-full px-4 py-1 cursor-pointer text-[#322904]'>
+                <div className='border-2 flex items-center justify-center w-fit h-fit bg-primary hover:bg-yellow-500 transition-colors duration-500 rounded-full px-4 py-1 cursor-pointer text-[#322904]'>
                   <p className='font-semibold text-sm md:text-base'>Buzz</p>
                 </div>
               </DialogTrigger>
             </div>
           </div>
-          <DialogContent className="max-w-[24rem] sm:max-w-[425px] bg-[#030712] text-white border-primary rounded-lg">
+          <DialogContent className="max-w-[24rem] sm:max-w-[425px] bg-[#030712] text-foreground border-primary rounded-lg">
             <DialogHeader>
               <DialogTitle>Buzz on BuzzHive</DialogTitle>
               <DialogDescription>
@@ -108,7 +108,7 @@ function PostBuzz() {
               </div>
               <div className="flex justify-center items-center">
 
-              <Button className="flex space-x-4 text-white bg-transparent border-muted-foreground border-2 text-xs hover:bg-muted-foreground"> 
+              <Button className="flex space-x-4 text-foreground bg-transparent border-muted-foreground border-2 text-xs hover:bg-muted-foreground"> 
               <Image src={"/mediaicon.svg"} alt={"/"} width={20} height={20}/>
               <p>
                 Add Image 

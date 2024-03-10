@@ -70,7 +70,7 @@ function Messagelist() {
         },
       ]
   return (
-    <div className='h-full border-2 text-white w-full rounded-2xl overflow-hidden'>
+    <div className='h-full border-2 text-foreground w-full rounded-2xl overflow-hidden'>
         <div className=' mx-auto w-[20rem] md:w-full max-w-2xl    h-fit drop-shadow-[0_0_35px_rgba(1,1,1,1.25)]  rounded-xl flex  justify-between py-2 px-6 my-5 backdrop-blur-3xl bg-[#1F2937] bg-opacity-50'>
         <p className='font-bold'>
           Messages

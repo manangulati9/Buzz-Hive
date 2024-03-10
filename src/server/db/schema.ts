@@ -1,6 +1,7 @@
 import { relations } from "drizzle-orm";
 import {
   AnyPgColumn,
+  boolean,
   integer,
   pgTable,
   serial,
@@ -11,10 +12,11 @@ import {
 
 export const users = pgTable("users", {
   id: text("id").primaryKey(),
-  username: text("username").notNull(),
-  name: text("name").notNull(),
-  email: text("email").notNull(),
+  username: text("username").notNull().default("username"),
+  name: text("name").notNull().default("user"),
+  email: text("email").notNull().default("examplemail@example.com"),
   image: text("image"),
+  verified: boolean("verified").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

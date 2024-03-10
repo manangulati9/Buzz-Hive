@@ -50,7 +50,7 @@ export default function Component({ message }: { message: { username: string, us
                         </div>
                         </DrawerTitle>
                         
-                        <DrawerDescription className="text-white max-h-[350px] text-lg text-start md:text-3xl">
+                        <DrawerDescription className="text-foreground max-h-[350px] text-lg text-start md:text-3xl">
                         <ScrollArea className="h-full w-full px-3">{text}</ScrollArea></DrawerDescription>
                         
                     </DrawerHeader>
