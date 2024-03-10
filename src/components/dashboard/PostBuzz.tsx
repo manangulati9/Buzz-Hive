@@ -22,6 +22,7 @@ import {
 import { EarthIcon, Smile } from "lucide-react"
 import Image from "next/image"
 import { useState } from "react"
+import { CldUploadWidget } from "next-cloudinary"
 
 function PostBuzz() {
   const [inputVal, setinputVal] = useState("");
@@ -108,12 +109,18 @@ function PostBuzz() {
               </div>
               <div className="flex justify-center items-center">
 
-              <Button className="flex space-x-4 text-white bg-transparent border-muted-foreground border-2 text-xs hover:bg-muted-foreground"> 
-              <Image src={"/mediaicon.svg"} alt={"/"} width={20} height={20}/>
-              <p>
-                Add Image 
-              </p>
-                </Button>
+              <CldUploadWidget uploadPreset="Preset">
+  {({ open }) => {
+    return (
+        <div className='flex border-2 border-muted-foreground px-4 py-2 rounded-2xl hover:bg-muted-foreground space-x-2'>
+        <Image src={'/mediaicon.svg'} alt={''} width={25} height={25}/>
+      <button className="button" onClick={() => open()}>
+        Add Image
+      </button>
+        </div>
+    );
+  }}
+</CldUploadWidget>
               </div>
             </div>
             <DialogFooter>

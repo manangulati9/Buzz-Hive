@@ -2,20 +2,16 @@ import { Heart, LucideBadgeCheck, MessageCircle, Share } from 'lucide-react'
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import { PostsProps } from '@/types';
 
 
-interface PostCardProps{
-    post: PostsProps;
-}
 
-function PostCard({post} : PostCardProps) {
+function PostCard({post} :{ post: {username : string, userlogo : string, userid : string, verified : boolean , feedtext : string, imageurl : string, commentscount : number, likescount : number}}) {
     const {username, userlogo, userid, verified , feedtext, imageurl, commentscount, likescount} = post;
 
   return (
     <div className='mx-auto w-[18rem]  min-h-[10rem] md:w-full max-w-xl md:min-h-[20rem] h-fit drop-shadow-2xl shadow-primary rounded-lg flex flex-col justify-between py-2 px-2 space-y-4 backdrop-blur-3xl bg-[#1F2937] bg-opacity-50'>
       <div className='flex flex-col space-y-2'>
-        <Link className='flex items-center text-center justify-start space-x-2' href={userid}>
+        <Link className='flex items-center text-center justify-start space-x-2' href={`user/?userid=${userid}`}>
             <div className='relative w-12 h-12 rounded-full shrink-0'>
                 <Image src={'/logo.svg'} alt={''} fill/>
             </div>
