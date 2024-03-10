@@ -127,7 +127,6 @@ export default function Sidebar() {
                 ["opacity-100"]: !isHovering,
               })} />
             </div>
-
             <div className={cn('px-5', {
               ["px-2"]: isClicked
             })}>
