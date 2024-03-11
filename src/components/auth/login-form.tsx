@@ -36,7 +36,8 @@ export function LoginForm() {
     mutate(values)
   }
 
-  const redirectURL = `${env.NEXT_PUBLIC_BASE_URL}/api/auth/callback`;
+  const redirectURL = `${env.NEXT_PUBLIC_URL}/api/auth/callback`
+  console.log(redirectURL)
 
   const googleSignIn = async () => {
     await supabase.auth.signInWithOAuth({
