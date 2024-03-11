@@ -36,7 +36,7 @@ export function LoginForm() {
     mutate(values)
   }
 
-  const redirectURL = `${env.NEXT_PUBLIC_BASE_URL}/api/auth/callback`;
+  const redirectURL = env.NEXT_PUBLIC_AUTH_CALLBACK_URL;
   console.log(redirectURL)
 
   const googleSignIn = async () => {
