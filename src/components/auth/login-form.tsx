@@ -29,18 +29,20 @@ export function LoginForm() {
     },
   })
 
-  const { mutate, isLoading } = api.auth.loginWithEmail.useMutation()
+  const { mutate } = api.auth.loginWithEmail.useMutation()
   const supabase = createClient();
 
   function onSubmit(values: z.infer<typeof loginSchema>) {
     mutate(values)
   }
 
+  const redirectURL = `${env.NEXT_PUBLIC_BASE_URL}/api/auth/callback`;
+
   const googleSignIn = async () => {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${env.NEXT_PUBLIC_URL}/api/auth/callback`
+        redirectTo: redirectURL
       }
     })
   }
@@ -49,7 +51,7 @@ export function LoginForm() {
     await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo: `${env.NEXT_PUBLIC_URL}/api/auth/callback`
+        redirectTo: redirectURL
       }
     })
   }
@@ -96,20 +98,12 @@ export function LoginForm() {
         </div>
       </div>
       <div className="flex gap-4">
-        <Button className="w-full" onClick={githubSignIn} variant="outline" type="button" disabled={isLoading}>
-          {isLoading ? (
-            <Icons.spinner />
-          ) : (
-            <Icons.gitHub className="mr-2 h-4 w-4" />
-          )}{" "}
+        <Button className="w-full" onClick={githubSignIn} variant="outline" type="button">
+          <Icons.gitHub className="mr-2 h-4 w-4" />
           GitHub
         </Button>
-        <Button className="w-full" variant="outline" onClick={googleSignIn} type="button" disabled={isLoading}>
-          {isLoading ? (
-            <Icons.spinner />
-          ) : (
-            <Icons.google className="mr-2 h-4 w-4" />
-          )}{" "}
+        <Button className="w-full" variant="outline" onClick={googleSignIn} type="button">
+          <Icons.google className="mr-2 h-4 w-4" />
           Google
         </Button>
       </div>
