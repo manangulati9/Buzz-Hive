@@ -37,7 +37,7 @@ export function LoginForm() {
   }
 
   const baseURL = getBaseURL();
-  const redirectURL = `${baseURL}/api/auth/callback`
+  const redirectURL = `https://buzz-hive-rosy.vercel.app/api/auth/callback`
   console.log(redirectURL)
 
   const googleSignIn = async () => {
