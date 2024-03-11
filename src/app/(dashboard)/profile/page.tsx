@@ -1,8 +1,10 @@
 import PostCard from "@/components/dashboard/PostCard";
 import Image from "next/image";
 import { api } from '@/trpc/server';
+import { unstable_noStore as noStore } from "next/cache";
 
 export default async function Component() {
+  noStore();
     const posts = await api.posts.getAllPosts.query({ page: 1 })
   return (
     <div className="flex flex-col min-h-[100dvh] text-white">
