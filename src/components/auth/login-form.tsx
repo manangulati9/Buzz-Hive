@@ -18,6 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { loginSchema } from "@/lib/zodSchemas"
 import { api } from "@/trpc/react"
 import { createClient } from "@/server/auth/client"
+import { env } from "@/env"
 
 export function LoginForm() {
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -35,7 +36,8 @@ export function LoginForm() {
     mutate(values)
   }
 
-  const redirectURL = `${window.location.origin}/api/auth/callback`
+  const redirectURL = `${env.NEXT_PUBLIC_URL}/api/auth/callback`
+  console.log(redirectURL)
 
   const googleSignIn = async () => {
     await supabase.auth.signInWithOAuth({
