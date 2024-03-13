@@ -172,7 +172,7 @@ export default function Page() {
         <section className="w-full text-background bg-foreground flex items-center justify-center py-4">
           <div className="flex flex-col items-center py-10 px-4 lg:min-h-[20rem] text-center space-y-8">
             <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
-              Here's what our users say
+              Here&apos;s what our users say
             </h1>
             <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
               {testimonials.map(item => (
