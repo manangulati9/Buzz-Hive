@@ -151,7 +151,7 @@ export default function Page() {
           <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
             What makes us different
           </h1>
-          <div className="container grid grid-cols-1 md:grid-cols-2 lg:flex flex-wrap gap-4 lg:gap-4">
+          <div className="container grid grid-cols-1 md:grid-cols-2 lg:flex justify-center flex-wrap gap-4 lg:gap-4">
             {features.map(item => (
               <Card key={item.title} className="max-w-sm transition-all hover:scale-105">
                 <CardHeader>
