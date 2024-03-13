@@ -28,7 +28,7 @@ function PostBuzz() {
   return (
     <div>
       <Dialog>
-        <div className='mx-auto w-[18rem]  md:w-full max-w-xl h-fit drop-shadow-[0_0_35px_rgba(1,1,1,1.25)]  rounded-lg flex flex-col justify-between py-2 px-2 space-y-4 my-10 backdrop-blur-3xl bg-[#1F2937] bg-opacity-50'>
+        <div className='mx-auto w-[18rem]  md:w-full max-w-xl h-fit drop-shadow-[0_0_35px_rgba(1,1,1,1.25)]  rounded-lg flex flex-col justify-between py-2 px-2 space-y-4 my-10 md:backdrop-blur-3xl bg-[#1F2937] bg-opacity-50'>
           <div className='flex flex-col space-y-2'>
             <div className='flex items-center text-center justify-start space-x-2'>
               <div className='relative w-14 h-14 rounded-full'>
