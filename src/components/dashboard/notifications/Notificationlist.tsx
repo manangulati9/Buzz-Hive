@@ -1,6 +1,5 @@
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { MessageCircle } from 'lucide-react'
-import React from 'react'
+import { Bell } from 'lucide-react'
 import Notificationpromt from './Notificationpromt'
 
 function Messagelist() {
@@ -63,11 +62,11 @@ function Messagelist() {
       ]
   return (
     <div className='h-full border-2 text-foreground w-full rounded-2xl overflow-hidden'>
-        <div className=' mx-auto w-[20rem] md:w-full max-w-2xl    h-fit drop-shadow-[0_0_35px_rgba(1,1,1,1.25)]  rounded-xl flex  justify-between py-2 px-6 my-5 backdrop-blur-3xl bg-[#1F2937] bg-opacity-50'>
+        <div className=' mx-auto w-[20rem] md:w-full max-w-2xl    h-fit drop-shadow-[0_0_35px_rgba(1,1,1,1.25)]  rounded-xl flex  justify-between py-2 px-6 my-5 md:backdrop-blur-3xl bg-[#1F2937] bg-opacity-50'>
         <p className='font-bold'>
-          Messages
+          Notifications
         </p>
-        <MessageCircle color='yellow' />
+        <Bell color='yellow' />
       </div>
       <ScrollArea className="h-full w-full p-3">
       <div className="flex flex-col  space-y-10 my-16 items-center">

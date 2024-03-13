@@ -3,7 +3,7 @@ import Image from "next/image";
 import { api } from '@/trpc/server';
 import { unstable_noStore as noStore } from "next/cache";
 
-export default async function Component() {
+export default async function Component({params} : {params : {userprofile : string}}) {
   noStore();
     const posts = await api.posts.getAllPosts.query({ page: 1 })
   return (
@@ -17,7 +17,7 @@ export default async function Component() {
           </div>
           <div className="space-y-4">
             <div className="space-y-2">
-              <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl text-primary">Alice Johnson</h1>
+              <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl text-primary">{params.userprofile}</h1>
               <p className="text-gray-500 dark:text-gray-400">@AliceJ</p>
             </div>
           </div>
