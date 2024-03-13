@@ -1,22 +1,20 @@
 "use client";
 
-import { Bell, ChevronLeftCircle, Home, LogIn, LogOut, MessageCircle, TrendingUp, User2 } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import { Bell, ChevronLeftCircle, Home, LogOut, MessageCircle, TrendingUp, User2 } from 'lucide-react';
+import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useRef } from 'react'
 import { useOnClickOutside } from 'usehooks-ts';
 import { Button } from '../ui/button';
-import { createClient, getCurrentUser } from '@/server/auth/client';
+import { signOut } from 'next-auth/react';
 
 export default function Sidebar() {
   const [isClicked, setisClicked] = useState(false);
   const [isHovering, setisHovering] = useState(true);
   const pathname = usePathname();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const router = useRouter()
 
   const ref = useRef(null)
 
@@ -26,23 +24,8 @@ export default function Sidebar() {
 
   useOnClickOutside(ref, handleClickOutside)
 
-  const setLogIn = async () => {
-    const user = await getCurrentUser()
-    if (user) {
-      setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
-    }
-  }
-
-  useEffect(() => {
-    setLogIn()
-  }, [])
-
   const handleSignOut = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push("/")
+    await signOut({ callbackUrl: "/" })
   }
 
   return (
@@ -130,16 +113,10 @@ export default function Sidebar() {
             <div className={cn('px-5', {
               ["px-2"]: isClicked
             })}>
-              {isLoggedIn ? <Button className='rounded-full flex gap-2 items-center mx-auto hover:bg-primary/80 hover:scale-110 transition-all' size='lg' onClick={handleSignOut}>
+              <Button className='rounded-full flex gap-2 items-center mx-auto hover:bg-primary/80 hover:scale-110 transition-all' size='lg' onClick={handleSignOut}>
                 <LogOut className='h-4 w-4' />
                 Sign out
-              </Button> :
-                <Link id='Items' className='flex space-x-2 justify-center transition-color duration-300 w-full h-12 rounded-full border-2   hover:bg-primary hover:text-primary-foreground items-center font-semibold text-foreground' href='/auth/login'>
-                  <LogIn />
-                  {!isClicked && (
-                    <p className={cn('text-lg')}>Sign In</p>)}
-                </Link>
-              }
+              </Button>
             </div>
           </div>
         </div>

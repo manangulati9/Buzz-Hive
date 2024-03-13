@@ -12,13 +12,13 @@ import {
 } from "@/components/ui/form"
 import { Icons } from "@/components/ui/icons"
 import { Input } from "@/components/ui/input"
-import { z } from "zod"
+import type { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { loginSchema } from "@/lib/zodSchemas"
-import { api } from "@/trpc/react"
-import { createClient } from "@/server/auth/client"
-import { getBaseURL } from "@/lib/utils"
+import { signIn } from "next-auth/react"
+import { toast } from "../ui/use-toast"
+import { useRouter } from "next/navigation"
 
 export function LoginForm() {
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -29,33 +29,32 @@ export function LoginForm() {
     },
   })
 
-  const { mutate } = api.auth.loginWithEmail.useMutation()
-  const supabase = createClient();
+  const router = useRouter();
+  const isSubmitting = form.formState.isSubmitting;
 
-  function onSubmit(values: z.infer<typeof loginSchema>) {
-    mutate(values)
+  async function onSubmit(values: z.infer<typeof loginSchema>) {
+    const signInResponse = await signIn('credentials', { ...values, redirect: false })
+
+    if (signInResponse?.error) {
+      console.log(signInResponse.error);
+      toast({
+        title: "Invalid email or password",
+        description: "Please check your credentials and try again",
+        variant: "destructive",
+        duration: 2000,
+      })
+      return;
+    }
+
+    router.push("/dashboard")
   }
 
-  const baseURL = getBaseURL();
-  const redirectURL = `${baseURL}/api/auth/callback`
-  console.log(redirectURL)
-
   const googleSignIn = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: redirectURL
-      }
-    })
+    await signIn('google', { callbackUrl: '/dashboard' })
   }
 
   const githubSignIn = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: 'github',
-      options: {
-        redirectTo: redirectURL
-      }
-    })
+    await signIn('github', { callbackUrl: '/dashboard' })
   }
 
   return <Form {...form}>
@@ -87,7 +86,17 @@ export function LoginForm() {
         )}
       />
       <div className="flex place-content-center">
-        <Button className="max-w-xs w-full" type="submit">Submit</Button>
+        <Button className="max-w-xs w-full" type="submit">
+          {isSubmitting ?
+            <>
+              <Icons.spinner />
+              Submitting...
+            </> :
+            <>
+              Submit
+            </>
+          }
+        </Button>
       </div>
       <div className="relative">
         <div className="absolute inset-0 flex items-center">

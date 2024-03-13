@@ -11,22 +11,21 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
-import { z } from "zod"
+import type { z } from "zod"
 import { useForm, useFormContext } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { api } from "@/trpc/react"
 import { Icons } from "../ui/icons"
 import { signUpSchema } from "@/lib/zodSchemas"
-import { RouterOutputs } from "@/server/api/root"
 import { CheckCircle, XCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { toast } from "../ui/use-toast"
+import { signIn } from "next-auth/react"
 
 type UsernameDescProps = {
-  data: RouterOutputs['auth']['isUsernameAvailable'] | undefined,
-  isFetching: boolean;
   lastUsername: string;
+  isUsernameValid: boolean;
 }
 
 export function SignUpForm() {
@@ -43,22 +42,50 @@ export function SignUpForm() {
 
   const router = useRouter();
   const username = form.watch("username");
-  const [lastUsername, setLastUsername] = React.useState(username);
-  const { isFetching, data, refetch } = api.auth.isUsernameAvailable.useQuery(username, { keepPreviousData: true, enabled: false });
+  const [didVerifyOnce, setDidVerifyOnce] = React.useState(false);
+  const [lastUsername, setLastUsername] = React.useState("");
+  const [isUsernameValid, setIsUsernameValid] = React.useState(false);
+  const { isFetching, refetch } = api.auth.isUsernameAvailable.useQuery(username, { enabled: false, retry: false });
+  const getDescription = () => isFetching ? "Checking..." : <UsernameDesc isUsernameValid={isUsernameValid} lastUsername={lastUsername} />;
+  const shouldRefetch = username !== "" && username !== lastUsername;
 
-  const { mutateAsync: mutate, isLoading } = api.auth.signUpWithEmail.useMutation();
+  const { mutate, isLoading, error: signUpError } = api.auth.signUpWithEmail.useMutation();
 
   const onSubmit = async (values: z.infer<typeof signUpSchema>) => {
-    await mutate(values)
-    router.push("/dashboard")
+    if (isUsernameValid) {
+      mutate(values);
+
+      if (signUpError) {
+        toast({
+          title: signUpError.message,
+          description: "Please check your credentials and try again",
+          variant: "destructive"
+        })
+        return;
+      }
+
+      await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+        callbackUrl: "/dashboard"
+      })
+
+      router.push("/dashboard")
+    }
   }
 
-  const verify = () => {
-    const isUsernameValid = !form.getFieldState("username").invalid
-    if (isUsernameValid && username !== "" && username !== lastUsername) {
-      refetch();
-      setLastUsername(username);
+  const verify = async () => {
+    const { isError, error } = await refetch();
+
+    if (isError) {
+      form.setError("username", { message: error.message }, { shouldFocus: true })
+      setIsUsernameValid(false)
+    } else {
+      setIsUsernameValid(true)
     }
+
+    setLastUsername(username);
+    setDidVerifyOnce(true);
   }
 
   return <Form {...form}>
@@ -68,9 +95,9 @@ export function SignUpForm() {
         name="name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Name</FormLabel>
+            <FormLabel>Full Name</FormLabel>
             <FormControl>
-              <Input placeholder="David" {...field} />
+              <Input placeholder="David Johnson" {...field} />
             </FormControl>
             <FormDescription>
               This is your public display name.
@@ -88,16 +115,11 @@ export function SignUpForm() {
             <FormControl>
               <div className="flex items-center gap-4">
                 <Input {...field} placeholder="david278" />
-                <Button variant="outline" onClick={verify} disabled={isFetching}>Check</Button>
+                <Button variant="outline" onClick={verify} disabled={!shouldRefetch}>Check</Button>
               </div>
             </FormControl>
-            <div className="flex gap-2 text-[0.8rem] text-muted-foreground items-center">
-              {data === true && <CheckCircle className="h-4 w-4" stroke="green" />}
-              <UsernameDesc lastUsername={lastUsername} isFetching={isFetching} data={data} />
-            </div>
-            <div className="flex gap-2 items-center">
-              {data === false && <XCircle className="h-4 w-4" stroke="red" />}
-              <FormMessage />
+            <div className="flex text-muted-foreground text-[0.8em] items-center gap-2">
+              {didVerifyOnce ? getDescription() : "Check username availability"}
             </div>
           </FormItem>
         )}
@@ -165,29 +187,22 @@ export function SignUpForm() {
 }
 
 function UsernameDesc(props: UsernameDescProps) {
-  const [desc, setDesc] = React.useState("Check username availability")
-  const { setError, watch } = useFormContext()
-  const { lastUsername, isFetching, data } = props;
+  const { isUsernameValid, lastUsername } = props;
+  const { getFieldState } = useFormContext()
+  const fieldError = getFieldState("username").error
 
-  const usernameVal = watch("username") as string;
-
-  React.useEffect(() => {
-    if (isFetching) {
-      setDesc('Checking...');
-    }
-
-    if (data === true) {
-      setDesc(`${lastUsername} is available`)
-    } else if (data === false) {
-      setError("username", { message: `${lastUsername} isn't available. Please choose another username` }, { shouldFocus: true })
-      setDesc("")
-    }
-
-  }, [data, isFetching, usernameVal])
-
-  return <p className={cn({
-    "text-green-600 font-semibold": data === true,
-  })}>
-    {desc}
-  </p>
+  return !isUsernameValid ?
+    <>
+      <XCircle className="h-4 w-4" stroke="red" />
+      <p className="text-red-600">
+        {fieldError?.message}
+      </p>
+    </>
+    :
+    <>
+      <CheckCircle className="h-4 w-4" stroke="green" />
+      <p className="text-green-600">
+        {`${lastUsername} is available`}
+      </p>
+    </>
 }
