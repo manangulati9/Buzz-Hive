@@ -35,7 +35,7 @@ export default function Sidebar() {
 
       </div>
       <div ref={ref} className={cn("fixed left-0  top-0 w-60 h-full  backdrop-blur-3xl drop-shadow-[0_35px_35px_rgba(1,1,1,1.25)] border-opacity-50 transition-all duration-300 z-50", {
-        ["-translate-x-full opacity-0 md:scale-100 md:opacity-100 md:translate-x-0 w-18"]: isClicked,
+        ["-translate-x-full opacity-0 md:scale-100 md:opacity-100 md:translate-x-0"]: isClicked,
         ["translate-x-0 opacity-100  "]: !isClicked,
       })} onMouseEnter={() => setisHovering(false)} onMouseLeave={() => setisHovering(true)}>
         <div className='h-full  flex flex-col pt-20 pb-5 backdrop-blur-3xl bg-[#1F2937] bg-opacity-50'>
@@ -43,60 +43,54 @@ export default function Sidebar() {
             <Image src={'/logo.svg'} alt={''} width={50} height={50} className={cn('rounded-full  backdrop-blur-3xl bg-[#1F2937] bg-opacity-50', {
               [""]: isClicked,
             })} />
-            {!isClicked && (
+            {true && (
               <p className={cn('text-primary font-bold text-2xl')}>BuzzHive</p>)}
           </div>
           <div className='h-full flex flex-col justify-between'>
 
-            <div id='Navbar items' className={cn('flex flex-col pt-10 px-4', {
-              ["space-y-8"]: isClicked,
-              ["space-y-3"]: !isClicked,
+            <div id='Navbar items' className={cn('flex flex-col pt-10 px-4 space-y-3', {
+              [""]: !isClicked,  
             })}>
               <Link id='Items' className={cn('flex space-x-2 transition-color duration-300  p-5 h-12 rounded-full   hover:bg-primary hover:text-primary-foreground items-center font-semibold text-foreground', {
-                ["p-1 items-center justify-center h-9 w-9"]: isClicked,
                 ["justify-start "]: !isClicked,
                 ["bg-primary text-primary-foreground border-2"]: pathname === '/dashboard',
               })} href={'/dashboard/'}>
                 <Home />
-                {!isClicked && (
+                {true && (
                   <p className={cn('text-lg')}>Home</p>)}
               </Link>
               <Link id='Items' className={cn('flex space-x-2 transition-color duration-300  p-5 h-12 rounded-full   hover:bg-primary hover:text-primary-foreground items-center font-semibold text-foreground', {
-                ["p-1 items-center justify-center  h-9 w-9"]: isClicked,
                 ["justify-start "]: !isClicked,
                 ["bg-primary text-primary-foreground border-2"]: pathname === '/dashboard/messages',
               })} href={'/dashboard/messages'}>
                 <MessageCircle />
-                {!isClicked && (
+                {true && (
                   <p className={cn('text-lg')}>Messages</p>)}
               </Link>
               <div className='flex items-center -space-x-1'>
                 <Link id='Items' className={cn('flex space-x-2 transition-color duration-300  p-5 h-12 rounded-full   hover:bg-primary hover:text-primary-foreground items-center font-semibold text-foreground', {
-                  ["p-1 items-center justify-center h-9 w-9"]: isClicked,
                   ["justify-start "]: !isClicked,
                   ["bg-primary text-primary-foreground border-2"]: pathname === '/dashboard/notifications',
                 })} href={'/dashboard/notifications'}>
                   <Bell />
-                  {!isClicked && (
+                  {true && (
                     <p className={cn('text-lg')}>Notifications</p>)}
                 </Link>
               </div>
               <Link id='Items' className={cn('flex space-x-2 transition-color duration-300  p-5 h-12 rounded-full   hover:bg-primary hover:text-primary-foreground items-center font-semibold text-foreground', {
-                ["p-1 items-center justify-center  h-9 w-9"]: isClicked,
                 ["justify-start "]: !isClicked,
                 ["bg-primary text-primary-foreground border-2"]: pathname === '/profile',
               })} href={'/profile'}>
                 <User2 />
-                {!isClicked && (
+                {true && (
                   <p className={cn('text-lg')}>User</p>)}
               </Link>
               <Link id='Items' className={cn('flex space-x-2 transition-color duration-300  p-5 h-12 rounded-full   hover:bg-primary hover:text-primary-foreground items-center font-semibold text-foreground', {
-                ["p-1 items-center justify-center  h-9 w-9"]: isClicked,
                 ["justify-start "]: !isClicked,
                 ["bg-primary text-primary-foreground border-2"]: pathname === '/dashboard/trending',
               })} href={'/dashboard/trending'}>
                 <TrendingUp />
-                {!isClicked && (
+                {true && (
                   <p className={cn('text-lg')}>Trending</p>)}
               </Link>
             </div>
@@ -105,7 +99,7 @@ export default function Sidebar() {
               [" px-4 rotate-0"]: !isClicked,
             })} onClick={() => setisClicked(!isClicked)}>
 
-              <ChevronLeftCircle color='white' size={40} className={cn('hover:scale-110 transition-all duration-500 cursor-pointer z-50', {
+              <ChevronLeftCircle color='white' size={40} className={cn('hover:scale-110 transition-all duration-500 cursor-pointer z-50 md:hidden ', {
                 ["md:opacity-0 opacity-100"]: isHovering,
                 ["opacity-100"]: !isHovering,
               })} />
