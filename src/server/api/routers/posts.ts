@@ -4,10 +4,10 @@ import {
   protectedProcedure,
 } from "@/server/api/trpc";
 import { postImages, posts } from "@/server/db/schema";
-import { createClient } from "@/server/auth/server";
 import { nanoid } from 'nanoid'
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
+import { createClient } from "@/server/supabase/server";
 
 export const postsRouter = createTRPCRouter({
   getAllPosts: protectedProcedure.input(z.object({ page: z.number() })).query(async ({ ctx, input }) => {
@@ -40,17 +40,17 @@ export const postsRouter = createTRPCRouter({
       throw new TRPCError({ message: "Couldn't get file path", code: "NOT_FOUND" })
     }
 
-    const newPosts = await ctx.db.insert(posts).values({ content: input.content, authorId: userId }).returning({ id: posts.id });
+    const newPosts = await ctx.db.insert(posts).values({ id: nanoid(), content: input.content, authorId: userId }).returning({ id: posts.id });
 
     if (!newPosts[0]) {
       throw new TRPCError({ message: "Couldn't get post id", code: "NOT_FOUND" });
     }
 
-    await ctx.db.insert(postImages).values({ url: data.path, postId: newPosts[0].id })
+    await ctx.db.insert(postImages).values({ id: nanoid(), url: data.path, postId: newPosts[0].id })
   }
   ),
 
-  deletePost: protectedProcedure.input(z.number()).mutation(async ({ ctx, input }) => {
-    await ctx.db.delete(posts).where(eq(posts.id, input));
+  deletePost: protectedProcedure.input(z.object({ postId: z.string() })).mutation(async ({ ctx, input }) => {
+    await ctx.db.delete(posts).where(eq(posts.id, input.postId));
   }),
 });

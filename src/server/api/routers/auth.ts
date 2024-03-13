@@ -1,71 +1,51 @@
-import { loginSchema, signUpSchema } from "@/lib/zodSchemas";
+import { signUpSchema, usernameSchema } from "@/lib/zodSchemas";
 import {
   createTRPCRouter,
   publicProcedure,
 } from "@/server/api/trpc";
-import { createClient } from "@/server/auth/server";
 import { users } from "@/server/db/schema";
+import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
-import { redirect } from "next/navigation";
+import { nanoid } from "nanoid";
+import bcrypt from "bcrypt";
 import { z } from "zod";
 
 export const authRouter = createTRPCRouter({
-  loginWithEmail: publicProcedure.input(loginSchema).mutation(async ({ input }) => {
-    const supabase = createClient();
-
-    const { error } = await supabase.auth.signInWithPassword(input);
-
-    if (error) {
-      redirect('/error')
-    } else {
-      redirect('/dashboard')
-    }
-  }),
-
   signUpWithEmail: publicProcedure.input(signUpSchema).mutation(async ({ input, ctx }) => {
-    try {
-      const supabase = createClient();
+    const result = await ctx.db.select().from(users).where(eq(users.email, input.email));
 
-      const { data: { user }, error } = await supabase.auth.signUp({
-        email: input.email, password: input.password, options: {
-          data: {
-            name: input.name,
-            username: input.username,
-          },
-        }
-      })
+    if (result.length > 0) throw new TRPCError({ message: "User already exists", code: "CONFLICT" })
 
-      if (error) {
-        throw new Error(error.message);
-      }
+    const hashedPassword = await bcrypt.hash(input.password, 10);
 
-      if (user) {
-        const newUser = {
-          name: input.name,
-          email: input.email,
-          username: input.username,
-          id: user.id,
-        } satisfies typeof users.$inferInsert
+    const newUser = {
+      name: input.name,
+      email: input.email,
+      username: input.username,
+      passwordHash: hashedPassword,
+      id: nanoid(),
+    } satisfies typeof users.$inferInsert
 
-        await ctx.db.insert(users).values(newUser)
-      }
-    } catch (error) {
-      console.error(error)
+    const [createdUser] = await ctx.db.insert(users).values(newUser).returning();
+
+    if (!createdUser) {
+      throw new TRPCError({ message: "Unable to create new user", code: "UNPROCESSABLE_CONTENT" });
     }
   }),
 
   isUsernameAvailable: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
-    try {
-      const result = await ctx.db.select().from(users).where(eq(users.username, input));
+    const parseResult = usernameSchema.safeParse(input);
 
-      if (result.length > 0) return false
-
-      return true;
-    } catch (error) {
-      console.error(error)
-      return null;
+    if (!parseResult.success) {
+      throw new TRPCError({ message: parseResult.error.flatten().formErrors[0], code: "UNPROCESSABLE_CONTENT" })
     }
-  }),
 
-  // TODO: Add procedure to store OAuth user details to db
+    const result = await ctx.db.select().from(users).where(eq(users.username, input));
+
+    if (result.length > 0) {
+      throw new TRPCError({ message: `${input} already exists.`, code: "CONFLICT" })
+    }
+
+    return true;
+  }),
 });

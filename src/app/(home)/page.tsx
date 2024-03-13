@@ -1,19 +1,17 @@
-'use client'
+import { SignOutButton } from "@/components/SignOutButton";
+import { getServerAuthSession } from "@/server/auth";
+import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
-import { createClient } from "@/server/auth/client";
-import { useRouter } from "next/navigation";
+export default async function Home() {
+  const session = await getServerAuthSession()
 
-export default function Home() {
-  const router = useRouter();
-
-  const handleSignOut = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-  }
+  const isLoggedIn = !!session
 
   return <div>
-    <Button onClick={handleSignOut}>Sign out</Button>
-    <Button onClick={() => router.push('/api/auth/callback')}>Callback</Button>
+    {isLoggedIn ?
+      <SignOutButton /> :
+      <Link href="/auth/login">Sign in</Link>
+    }
+    <Link href="/dashboard">Dashboard</Link>
   </div>
 }

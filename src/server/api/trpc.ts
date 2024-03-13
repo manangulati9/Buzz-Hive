@@ -6,12 +6,11 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 import { db } from "@/server/db";
-import { createClient } from "../auth/server";
+import { getServerAuthSession } from "@/server/auth";
 
 /**
  * 1. CONTEXT
@@ -27,13 +26,15 @@ import { createClient } from "../auth/server";
  */
 
 export const createTRPCContext = async (opts: { headers: Headers }) => {
+  const session = await getServerAuthSession();
+
   return {
     db,
+    session,
     ...opts,
   };
 };
 
-type Context = Awaited<ReturnType<typeof createTRPCContext>>;
 /**
  * 2. INITIALIZATION
  *
@@ -41,7 +42,7 @@ type Context = Awaited<ReturnType<typeof createTRPCContext>>;
  * ZodErrors so that you get typesafety on the frontend if your procedure fails due to validation
  * errors on the backend.
  */
-const t = initTRPC.context<Context>().create({
+const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
   errorFormatter({ shape, error }) {
     return {
@@ -85,18 +86,15 @@ export const publicProcedure = t.procedure;
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure.use(async (opts) => {
-  const supabase = createClient();
-  const { data: { session }, error } = await supabase.auth.getSession();
-
-  if (!session ?? !session?.user) {
-    throw new TRPCError({ message: error?.message, code: "UNAUTHORIZED" })
+export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
+  if (!ctx.session || !ctx.session.user) {
+    throw new TRPCError({ message: "Couldn't fetch user session", code: "UNAUTHORIZED" });
   }
 
-  return opts.next({
+  return next({
     ctx: {
-      session,
-      user: session.user,
+      session: ctx.session,
+      user: ctx.session.user,
     },
   });
 });
