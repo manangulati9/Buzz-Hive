@@ -1,6 +1,5 @@
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Bell, MessageCircle } from 'lucide-react'
-import React from 'react'
+import { Bell } from 'lucide-react'
 import Notificationpromt from './Notificationpromt'
 
 function Messagelist() {
