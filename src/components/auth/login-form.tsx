@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/form"
 import { Icons } from "@/components/ui/icons"
 import { Input } from "@/components/ui/input"
-import { z } from "zod"
+import type { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { loginSchema } from "@/lib/zodSchemas"
@@ -49,12 +49,12 @@ export function LoginForm() {
     router.push("/dashboard")
   }
 
-  const googleSignIn = () => {
-    signIn('google', { callbackUrl: '/dashboard' })
+  const googleSignIn = async () => {
+    await signIn('google', { callbackUrl: '/dashboard' })
   }
 
   const githubSignIn = async () => {
-    signIn('github', { callbackUrl: '/dashboard' })
+    await signIn('github', { callbackUrl: '/dashboard' })
   }
 
   return <Form {...form}>

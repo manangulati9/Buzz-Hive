@@ -1,22 +1,17 @@
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import {
   getServerSession,
   type DefaultSession,
   type NextAuthOptions,
 } from "next-auth";
-import { type Adapter } from "next-auth/adapters";
 import Google from "next-auth/providers/google";
 import Github from "next-auth/providers/github";
 import Credentials from "next-auth/providers/credentials";
 import { env } from "@/env";
 import { db } from "@/server/db";
-import { pgTable } from "drizzle-orm/pg-core";
 import { users } from "./db/schema";
 import { eq } from "drizzle-orm";
 import { loginSchema } from "@/lib/zodSchemas";
 import bcrypt from "bcrypt"
-import { nanoid } from "nanoid";
-import { cookies } from 'next/headers'
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -28,15 +23,14 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
-      // ...other properties
-      // role: UserRole;
     } & DefaultSession["user"];
   }
+}
 
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+declare module "next-auth/jwt" {
+  interface JWT {
+    userId: string;
+  }
 }
 
 /**
@@ -44,48 +38,21 @@ declare module "next-auth" {
  *
  * @see https://next-auth.js.org/configuration/options
  */
-
-export const adapter = DrizzleAdapter(db, pgTable) as Adapter;
-
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => {
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          id: user.id,
-        },
-      }
+    session: ({ session, token }) => {
+      session.user.id = token.userId;
+      return session;
     },
-    signIn: async (opts) => {
-      if (opts.account?.provider === "credentials") {
-        if (opts.user) {
-          const sessionToken = nanoid()
-          const sessionExpiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-
-          if (!adapter.createSession) {
-            console.error("Error: Couldn't find createSession callback")
-            return false;
-          }
-
-          await adapter.createSession({
-            sessionToken: sessionToken,
-            userId: opts.user.id,
-            expires: sessionExpiry,
-          });
-
-          const cookieStore = cookies();
-          cookieStore.set('next-auth.session-token', sessionToken, {
-            expires: sessionExpiry
-          })
-        }
+    jwt: ({ token, account }) => {
+      if (account && account.type === "credentials") {
+        token.userId = account.providerAccountId;
       }
-      return true;
+      return token;
     },
   },
   session: {
-    strategy: "database",
+    strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60,
     updateAge: 24 * 60 * 60,
   },
@@ -93,7 +60,6 @@ export const authOptions: NextAuthOptions = {
     signIn: "/auth/login",
   },
   secret: env.NEXTAUTH_SECRET,
-  adapter,
   providers: [
     Google({
       clientId: env.GOOGLE_CLIENT_ID,

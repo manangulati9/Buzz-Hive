@@ -1,21 +1,17 @@
 import { relations } from "drizzle-orm";
 import {
-  AnyPgColumn,
+  type AnyPgColumn,
   boolean,
-  integer,
   pgTable,
-  primaryKey,
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
-import { AdapterAccount } from "next-auth/adapters";
 
-export const users = pgTable("user", {
+export const users = pgTable("users", {
   id: text("id").primaryKey(),
   username: text("username").notNull().default("username").unique(),
   name: text("name").notNull().default("user"),
   email: text("email").notNull().default("examplemail@example.com").unique(),
-  emailVerified: timestamp("emailVerified", { mode: "date" }),
   passwordHash: text("pw_hash").unique(),
   image: text("image"),
   verified: boolean("verified").notNull().default(false),
@@ -140,54 +136,3 @@ export const messagesRelations = relations(messages, ({ one }) => ({
     relationName: 'receiver'
   }),
 }))
-
-export const accounts = pgTable(
-  "account",
-  {
-    userId: text("userId")
-      .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-    type: text("type").$type<AdapterAccount["type"] | 'credential'>().notNull(),
-    provider: text("provider").notNull(),
-    providerAccountId: text("providerAccountId").notNull(),
-    refreshTokenExpiresIn: integer("refresh_token_expires_in"),
-    refresh_token: text("refresh_token"),
-    access_token: text("access_token"),
-    expires_at: integer("expires_at"),
-    token_type: text("token_type"),
-    scope: text("scope"),
-    id_token: text("id_token"),
-    session_state: text("session_state"),
-  },
-  (account) => ({
-    compoundKey: primaryKey({ columns: [account.provider, account.providerAccountId] }),
-  })
-)
-
-export const accountsRelations = relations(accounts, ({ one }) => ({
-  user: one(users, { fields: [accounts.userId], references: [users.id] }),
-}));
-
-export const sessions = pgTable("session", {
-  sessionToken: text("sessionToken").notNull().primaryKey(),
-  userId: text("userId")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  expires: timestamp("expires", { mode: "date" }).notNull(),
-})
-
-export const sessionsRelations = relations(sessions, ({ one }) => ({
-  user: one(users, { fields: [sessions.userId], references: [users.id] }),
-}));
-
-export const verificationTokens = pgTable(
-  "verificationToken",
-  {
-    identifier: text("identifier").notNull(),
-    token: text("token").notNull(),
-    expires: timestamp("expires", { mode: "date" }).notNull(),
-  },
-  (vt) => ({
-    compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
-  })
-)

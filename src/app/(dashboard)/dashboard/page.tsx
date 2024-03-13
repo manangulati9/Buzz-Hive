@@ -10,8 +10,7 @@ import { unstable_noStore as noStore } from "next/cache";
 
 export default async function Page() {
   noStore();
-  // const posts = await api.posts.getAllPosts.query({ page: 1 })
-  const posts: any[] = []
+  const posts = await api.posts.getAllPosts.query({ page: 1 })
 
   const messages = [
     {

@@ -1,15 +1,7 @@
 import Sidebar from "@/components/layout/sidebar";
-import { getServerAuthSession } from "@/server/auth";
-import { redirect } from "next/navigation";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
-export default async function Layout({ children }: { children: ReactNode }) {
-  const session = await getServerAuthSession();
-
-  if (!session) {
-    redirect("/")
-  }
-
+export default function Layout({ children }: { children: ReactNode }) {
   return <div>
     <Sidebar />
     {children}

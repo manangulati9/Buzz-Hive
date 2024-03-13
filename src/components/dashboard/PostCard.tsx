@@ -1,4 +1,4 @@
-import { posts } from '@/server/db/schema';
+import type { posts } from '@/server/db/schema';
 import { api } from '@/trpc/server';
 import { Heart, LucideBadgeCheck, MessageCircle } from 'lucide-react'
 import Image from 'next/image';

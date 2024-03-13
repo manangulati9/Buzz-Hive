@@ -1,11 +1,11 @@
 "use client";
 
-import { Bell, ChevronLeftCircle, Home, LogIn, LogOut, MessageCircle, TrendingUp, User2 } from 'lucide-react';
+import { Bell, ChevronLeftCircle, Home, LogOut, MessageCircle, TrendingUp, User2 } from 'lucide-react';
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useRef } from 'react'
 import { useOnClickOutside } from 'usehooks-ts';
 import { Button } from '../ui/button';
@@ -15,7 +15,6 @@ export default function Sidebar() {
   const [isClicked, setisClicked] = useState(false);
   const [isHovering, setisHovering] = useState(true);
   const pathname = usePathname();
-  const router = useRouter()
 
   const ref = useRef(null)
 
@@ -25,9 +24,8 @@ export default function Sidebar() {
 
   useOnClickOutside(ref, handleClickOutside)
 
-  const handleSignOut = () => {
-    signOut()
-    router.push("/")
+  const handleSignOut = async () => {
+    await signOut({ callbackUrl: "/" })
   }
 
   return (

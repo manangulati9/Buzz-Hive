@@ -11,9 +11,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
-import { z } from "zod"
+import type { z } from "zod"
 import { useForm, useFormContext } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { api } from "@/trpc/react"
@@ -22,6 +21,7 @@ import { signUpSchema } from "@/lib/zodSchemas"
 import { CheckCircle, XCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { toast } from "../ui/use-toast"
+import { signIn } from "next-auth/react"
 
 type UsernameDescProps = {
   lastUsername: string;
@@ -51,28 +51,34 @@ export function SignUpForm() {
 
   const { mutate, isLoading, error: signUpError } = api.auth.signUpWithEmail.useMutation();
 
-  const onSubmit = (values: z.infer<typeof signUpSchema>) => {
+  const onSubmit = async (values: z.infer<typeof signUpSchema>) => {
     if (isUsernameValid) {
       mutate(values);
 
-      if (!signUpError) {
-        router.push("/dashboard");
+      if (signUpError) {
+        toast({
+          title: signUpError.message,
+          description: "Please check your credentials and try again",
+          variant: "destructive"
+        })
         return;
       }
 
-      toast({
-        title: signUpError.message,
-        description: "Please check your credentials and try again",
-        variant: "destructive"
+      await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+        callbackUrl: "/dashboard"
       })
+
+      router.push("/dashboard")
     }
   }
 
   const verify = async () => {
-    const result = await refetch();
+    const { isError, error } = await refetch();
 
-    if (result.isError) {
-      form.setError("username", { type: "invalid_username", message: result.error.message })
+    if (isError) {
+      form.setError("username", { message: error.message }, { shouldFocus: true })
       setIsUsernameValid(false)
     } else {
       setIsUsernameValid(true)
@@ -182,12 +188,14 @@ export function SignUpForm() {
 
 function UsernameDesc(props: UsernameDescProps) {
   const { isUsernameValid, lastUsername } = props;
+  const { getFieldState } = useFormContext()
+  const fieldError = getFieldState("username").error
 
   return !isUsernameValid ?
     <>
       <XCircle className="h-4 w-4" stroke="red" />
       <p className="text-red-600">
-        {`${lastUsername} already exists`}
+        {fieldError?.message}
       </p>
     </>
     :
