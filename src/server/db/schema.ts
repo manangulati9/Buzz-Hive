@@ -10,7 +10,6 @@ import {
 } from "drizzle-orm/pg-core";
 import { AdapterAccount } from "next-auth/adapters";
 
-
 export const users = pgTable("user", {
   id: text("id").primaryKey(),
   username: text("username").notNull().default("username").unique(),
@@ -148,9 +147,10 @@ export const accounts = pgTable(
     userId: text("userId")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    type: text("type").$type<AdapterAccount["type"]>().notNull(),
+    type: text("type").$type<AdapterAccount["type"] | 'credential'>().notNull(),
     provider: text("provider").notNull(),
     providerAccountId: text("providerAccountId").notNull(),
+    refreshTokenExpiresIn: integer("refresh_token_expires_in"),
     refresh_token: text("refresh_token"),
     access_token: text("access_token"),
     expires_at: integer("expires_at"),

@@ -29,7 +29,7 @@ export function LoginForm() {
     },
   })
 
-  const router = useRouter()
+  const router = useRouter();
   const isSubmitting = form.formState.isSubmitting;
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
@@ -46,7 +46,7 @@ export function LoginForm() {
       return;
     }
 
-    router.push("/")
+    router.push("/dashboard")
   }
 
   const googleSignIn = () => {

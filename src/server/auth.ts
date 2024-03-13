@@ -15,6 +15,8 @@ import { users } from "./db/schema";
 import { eq } from "drizzle-orm";
 import { loginSchema } from "@/lib/zodSchemas";
 import bcrypt from "bcrypt"
+import { nanoid } from "nanoid";
+import { cookies } from 'next/headers'
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -42,18 +44,56 @@ declare module "next-auth" {
  *
  * @see https://next-auth.js.org/configuration/options
  */
+
+export const adapter = DrizzleAdapter(db, pgTable) as Adapter;
+
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    session: ({ session, user }) => {
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: user.id,
+        },
+      }
+    },
+    signIn: async (opts) => {
+      if (opts.account?.provider === "credentials") {
+        if (opts.user) {
+          const sessionToken = nanoid()
+          const sessionExpiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+
+          if (!adapter.createSession) {
+            console.error("Error: Couldn't find createSession callback")
+            return false;
+          }
+
+          await adapter.createSession({
+            sessionToken: sessionToken,
+            userId: opts.user.id,
+            expires: sessionExpiry,
+          });
+
+          const cookieStore = cookies();
+          cookieStore.set('next-auth.session-token', sessionToken, {
+            expires: sessionExpiry
+          })
+        }
+      }
+      return true;
+    },
+  },
+  session: {
+    strategy: "database",
+    maxAge: 30 * 24 * 60 * 60,
+    updateAge: 24 * 60 * 60,
+  },
+  pages: {
+    signIn: "/auth/login",
   },
   secret: env.NEXTAUTH_SECRET,
-  adapter: DrizzleAdapter(db, pgTable) as Adapter,
+  adapter,
   providers: [
     Google({
       clientId: env.GOOGLE_CLIENT_ID,
@@ -70,24 +110,35 @@ export const authOptions: NextAuthOptions = {
         password: { label: "password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials) return null;
+        if (!credentials) {
+          console.error("Error: Credentials not found")
+          return null;
+        }
 
         const result = loginSchema.safeParse(credentials)
 
-        if (!result.success) return null;
+        if (!result.success) {
+          console.error("Error: Schema parsing failed.")
+          return null;
+        }
 
         const validatedCreds = result.data;
 
         const [user] = await db.select().from(users).where(eq(users.email, validatedCreds.email));
 
         if (!user ?? !user?.passwordHash) {
+          console.error("Error: Couldn't get the user from database.")
           return null;
         }
 
         const passwordsMatch = await bcrypt.compare(validatedCreds.password, user.passwordHash);
 
-        if (!passwordsMatch) return null;
+        if (!passwordsMatch) {
+          console.error("Error: Passwords don't match.")
+          return null;
+        }
 
+        console.log("Authorization successfull!")
         return user;
       }
     })

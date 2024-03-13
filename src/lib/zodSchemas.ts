@@ -7,6 +7,6 @@ export const loginSchema = z.object({
 
 export const signUpSchema = loginSchema.extend({
   name: z.string().min(1, "Name is too short"),
-  username: z.string().min(1, "Username is too short").max(12, "Username length exceeded"),
+  username: z.string().min(1, "Username is too short").max(25, "Username length exceeded").toLowerCase(),
   confirmPassword: z.string().min(8, "Password is too short").max(25, "Password length exceeded"),
 }).refine((val) => val.password === val.confirmPassword, { message: "Passwords don't match", path: ["confirmPassword"] })
