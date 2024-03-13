@@ -32,7 +32,7 @@ export default async function Component() {
             </div>
           </div>
         </div>
-        <div className='w-[20rem]     h-fit drop-shadow-[0_0_35px_rgba(1,1,1,1.25)]  rounded-xl flex  justify-between py-2 px-6 my-5 backdrop-blur-3xl bg-[#1F2937] bg-opacity-50'>
+        <div className='w-[20rem]     h-fit drop-shadow-[0_0_35px_rgba(1,1,1,1.25)]  rounded-xl flex  justify-between py-2 px-6 my-5 md:backdrop-blur-3xl bg-[#1F2937] bg-opacity-50'>
         <p className='font-bold text-primary'>
           Buzzes
         </p>

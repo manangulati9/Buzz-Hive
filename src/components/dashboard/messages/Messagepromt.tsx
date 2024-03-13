@@ -19,10 +19,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 export default function Component({ message }: { message: { username: string, userlogo: string, text: string, verified: boolean, newmessage: boolean } }) {
   const { username, userlogo, text, newmessage } = message;
   return (
-    <div className="flex flex-col h-fit w-[80%] border rounded-lg hover:cursor-pointer hover:bg-muted-foreground transition-colors duration-300   dark:border-gray-800 backdrop-blur-3xl bg-[#1F2937] bg-opacity-50">
+    <div className="flex flex-col h-fit w-[80%] border rounded-lg hover:cursor-pointer hover:bg-muted-foreground transition-colors duration-300   dark:border-gray-800 md:backdrop-blur-3xl bg-[#1F2937] bg-opacity-50">
       <Drawer>
         <DrawerTrigger>
-          <div className="flex p-4  text-sm dark:bg-gray-950 items-center justify-between">
+          <div className="flex md:px-4 py-4 px-2  text-sm dark:bg-gray-950 items-center justify-between">
             <div className="flex items-center gap-4">
               <div className='relative w-10 h-10 rounded-full shrink-0'>
                 <Image src={userlogo} alt={''} fill />
@@ -37,7 +37,7 @@ export default function Component({ message }: { message: { username: string, us
               </div>)}
           </div>
         </DrawerTrigger>
-        <DrawerContent className="bg-current container h-[90%]">
+        <DrawerContent className="bg-gray-950 container h-[90%]">
           <DrawerHeader>
             <DrawerTitle className="text-primary">
               <div className="flex items-center gap-4">
