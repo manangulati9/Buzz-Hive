@@ -38,7 +38,8 @@ export const posts = pgTable(
 
 export const postImages = pgTable("post_images", {
   id: text("id").primaryKey(),
-  url: text("url").notNull(),
+  url: text("url").notNull().unique().default(""),
+  filename: text("filename").notNull().default(""),
   postId: text("post_id").notNull().references(() => posts.id, { onDelete: 'cascade' }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),

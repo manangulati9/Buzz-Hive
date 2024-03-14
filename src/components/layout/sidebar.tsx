@@ -44,7 +44,7 @@ export default function Sidebar() {
               [""]: isClicked,
             })} />
             {true && (
-              <p className={cn('text-primary font-bold text-2xl')}>BuzzHive</p>)}
+              <p className={cn('text-primary font-bold text-primary-foregroundxl')}>BuzzHive</p>)}
           </div>
           <div className='h-full flex flex-col justify-between'>
 

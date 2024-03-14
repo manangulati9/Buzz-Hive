@@ -45,12 +45,12 @@ export default function Component({ message }: { message: { username: string, us
                   <Image src={userlogo} alt={''} fill />
                 </div>
                 <div className="grid gap-1 text-xs">
-                  <div className="font-semibold text-4xl md:text-7xl">{username}</div>
+                  <div className="font-semibold text-primary-foregroundxl md:text-7xl">{username}</div>
                 </div>
               </div>
             </DrawerTitle>
 
-            <DrawerDescription className="text-foreground max-h-[350px] text-lg text-start md:text-3xl">
+            <DrawerDescription className="text-foreground max-h-[350px] text-lg text-start md:text-primary-foregroundxl">
               <ScrollArea className="h-full w-full px-3">{text}</ScrollArea></DrawerDescription>
 
           </DrawerHeader>
