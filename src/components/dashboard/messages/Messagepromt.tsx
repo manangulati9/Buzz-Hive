@@ -32,7 +32,7 @@ export default function Component({
           <div className="flex items-center justify-between px-2  py-4 text-sm dark:bg-gray-950 md:px-4">
             <div className="flex items-center gap-4">
               <div className="relative h-10 w-10 shrink-0 rounded-full">
-                <Image src={userlogo} alt={""} fill />
+                <Image src={userlogo} alt={""} fill className="rounded-full" />
               </div>
               <div className="grid gap-1 text-xs">
                 <div className="text-lg font-semibold">{username}</div>
@@ -50,7 +50,12 @@ export default function Component({
             <DrawerTitle className="text-primary">
               <div className="flex items-center gap-4">
                 <div className="relative h-16 w-16 shrink-0 rounded-full">
-                  <Image src={userlogo} alt={""} fill />
+                  <Image
+                    src={userlogo}
+                    alt={""}
+                    fill
+                    className="rounded-full"
+                  />
                 </div>
                 <div className="grid gap-1 text-xs">
                   <div className="text-4xl font-semibold md:text-7xl">

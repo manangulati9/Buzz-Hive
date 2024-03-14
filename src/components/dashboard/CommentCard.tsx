@@ -12,6 +12,7 @@ function CommentCard({
     verified: boolean;
     username: string;
     comment: string;
+    image: string;
   };
 }) {
   return (
@@ -22,7 +23,7 @@ function CommentCard({
           href={`/profile?userId=${user.id}`}
         >
           <div className="relative h-12 w-12 shrink-0 rounded-full">
-            <Image src={"/logo.svg"} alt={""} fill />
+            <Image src={user.image} alt={""} fill />
           </div>
           <div className="flex h-fit flex-col items-start -space-y-1">
             <div className="flex items-center space-x-1">
