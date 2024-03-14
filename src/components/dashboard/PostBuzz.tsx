@@ -21,11 +21,16 @@ import { EarthIcon, Smile } from "lucide-react";
 import Image from "next/image";
 import { type ChangeEvent, useRef, useState } from "react";
 import { Textarea } from "../ui/textarea";
+import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
 
 function PostBuzz() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState(false);
+  const [openEmoji, setopenEmoji] = useState(false);
+  const [textValue, settextValue] = useState<
+    string | readonly string[] | number | undefined
+  >("");
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -121,6 +126,7 @@ function PostBuzz() {
                     className="cursor-pointer text-primary transition-all duration-200 hover:scale-110"
                     height={23}
                     width={23}
+                    onClick={(prev) => setopenEmoji(!openEmoji)}
                   />
                 </DialogTrigger>
               </div>
@@ -144,9 +150,11 @@ function PostBuzz() {
               <Textarea
                 className="min-h-40 border-2 border-muted-foreground md:min-h-80"
                 placeholder="What's on your mind today?"
+                value={textValue}
+                onChange={(e) => settextValue(e.target.value)}
               />
 
-              <div className="flex items-center">
+              <div className="flex items-center gap-4">
                 <Button
                   className="h-fit w-fit justify-around gap-4 border-2 border-muted-foreground bg-transparent text-foreground hover:bg-muted-foreground"
                   onClick={handleInputClick}
@@ -167,7 +175,23 @@ function PostBuzz() {
                   ref={inputRef}
                   className="hidden"
                 />
+                <Smile
+                  className="cursor-pointer text-primary transition-all duration-200 hover:scale-110"
+                  height={23}
+                  width={23}
+                  onClick={(prev) => setopenEmoji(!openEmoji)}
+                />
               </div>
+              <EmojiPicker
+                open={openEmoji}
+                className="mx-auto text-xs"
+                theme={"dark" as Theme}
+                height={300}
+                onEmojiClick={(e) => {
+                  const emoji = `${e.emoji}`;
+                  settextValue((prev) => prev?.toString() + emoji);
+                }}
+              />
               {error && (
                 <p className="text-center text-sm text-destructive">
                   You can only upload up to five files. Try again

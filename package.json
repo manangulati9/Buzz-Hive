@@ -40,6 +40,7 @@
     "clsx": "^2.1.0",
     "dotenv-expand": "^11.0.6",
     "drizzle-orm": "^0.29.5",
+    "emoji-picker-react": "^4.8.0",
     "framer-motion": "^11.0.8",
     "lucide-react": "^0.350.0",
     "nanoid": "^5.0.6",

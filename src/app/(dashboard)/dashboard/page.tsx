@@ -7,10 +7,55 @@ import Link from "next/link";
 import PostBuzz from "@/components/dashboard/PostBuzz";
 import { api } from "@/trpc/server";
 import { unstable_noStore as noStore } from "next/cache";
+import { posts } from "@/server/db/schema";
 
-export default async function Page() {
+export default function Page() {
   noStore();
-  const posts = await api.posts.getAllPosts.query({ page: 1 });
+  // const posts = await api.posts.getAllPosts.query({ page: 1 });
+  const postArray: (typeof posts.$inferSelect)[] = [
+    {
+      authorId: "asdasd",
+      content: "Hola amigo",
+      createdAt: new Date(),
+      id: "adgadg",
+      updatedAt: new Date(),
+    },
+    {
+      authorId: "sdgsdgn",
+      content: "Hola amigo",
+      createdAt: new Date(),
+      id: "adsgasgd",
+      updatedAt: new Date(),
+    },
+    {
+      authorId: "sdgdg",
+      content: "Hola amigo",
+      createdAt: new Date(),
+      id: "adgdg",
+      updatedAt: new Date(),
+    },
+    {
+      authorId: "asdg",
+      content: "Hola amigo",
+      createdAt: new Date(),
+      id: "adgsg",
+      updatedAt: new Date(),
+    },
+    {
+      authorId: "asdgadsg",
+      content: "Hola amigo",
+      createdAt: new Date(),
+      id: "adsgasg",
+      updatedAt: new Date(),
+    },
+    {
+      authorId: "adgg",
+      content: "Hola amigo",
+      createdAt: new Date(),
+      id: "Fdf",
+      updatedAt: new Date(),
+    },
+  ];
 
   const messages = [
     {
@@ -42,7 +87,8 @@ export default async function Page() {
         </div>
         <PostBuzz />
         <div className="flex flex-col space-y-14">
-          {posts.map((post) => (
+          {/* postArray = posts (mocked) */}
+          {postArray.map((post) => (
             <PostCard key={post.id} post={post} />
           ))}
         </div>
