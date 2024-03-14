@@ -21,6 +21,7 @@ import { EarthIcon, Smile } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { Textarea } from "../ui/textarea";
+<<<<<<< HEAD
 import { api } from "@/trpc/react";
 import {
   MultiFileDropzone,
@@ -33,15 +34,26 @@ type FileUpload = {
   url: string;
   filename: string;
 } | undefined
+=======
+import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
+>>>>>>> 4ad35c2ae0d3395529412b2126ae8f5873009d2c
 
 function PostBuzz() {
   const [showModal, setShowModal] = useState(false);
+<<<<<<< HEAD
   const textRef = useRef<HTMLTextAreaElement | null>(null)
   const { mutate, isLoading } = api.posts.createPost.useMutation({ onSuccess: () => setShowModal(false) })
   const [errorMessage, setErrorMessage] = useState("");
   const [fileStates, setFileStates] = useState<FileState[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<FileUpload[]>([])
   const { edgestore } = useEdgeStore();
+=======
+  const [error, setError] = useState(false);
+  const [openEmoji, setopenEmoji] = useState(false);
+  const [textValue, settextValue] = useState<
+    string | readonly string[] | number | undefined
+  >("");
+>>>>>>> 4ad35c2ae0d3395529412b2126ae8f5873009d2c
 
   const updateFileProgress = (key: string, progress: FileState['progress']) => {
     setFileStates((fileStates) => {
@@ -158,6 +170,7 @@ function PostBuzz() {
                     className="cursor-pointer text-primary transition-all duration-200 hover:scale-110"
                     height={23}
                     width={23}
+                    onClick={(prev) => setopenEmoji(!openEmoji)}
                   />
                 </DialogTrigger>
               </div>
@@ -181,6 +194,7 @@ function PostBuzz() {
               <Textarea
                 className="min-h-40 border-2 border-muted-foreground md:min-h-80"
                 placeholder="What's on your mind today?"
+<<<<<<< HEAD
                 ref={textRef}
               />
               <MultiFileDropzone
@@ -210,6 +224,68 @@ function PostBuzz() {
                   {isLoading ? "Sending your buzz..." : "Buzz!"}
                 </Button>
               </div>
+=======
+                value={textValue}
+                onChange={(e) => settextValue(e.target.value)}
+              />
+
+              <div className="flex items-center gap-4">
+                <Button
+                  className="h-fit w-fit justify-around gap-4 border-2 border-muted-foreground bg-transparent text-foreground hover:bg-muted-foreground"
+                  onClick={handleInputClick}
+                >
+                  <Image
+                    src={"/mediaicon.svg"}
+                    alt={""}
+                    width={20}
+                    height={20}
+                  />
+                  Upload
+                </Button>
+                <input
+                  type="file"
+                  accept="image/*,video/mp4"
+                  multiple
+                  onChange={handleFileChange}
+                  ref={inputRef}
+                  className="hidden"
+                />
+                <Smile
+                  className="cursor-pointer text-primary transition-all duration-200 hover:scale-110"
+                  height={23}
+                  width={23}
+                  onClick={(prev) => setopenEmoji(!openEmoji)}
+                />
+              </div>
+              <EmojiPicker
+                open={openEmoji}
+                className="mx-auto text-xs"
+                theme={"dark" as Theme}
+                height={300}
+                onEmojiClick={(e) => {
+                  const emoji = `${e.emoji}`;
+                  settextValue((prev) => prev?.toString() + emoji);
+                }}
+              />
+              {error && (
+                <p className="text-center text-sm text-destructive">
+                  You can only upload up to five files. Try again
+                </p>
+              )}
+              {selectedFiles.length > 0 && (
+                <p className="text-center text-sm text-primary">{`${selectedFiles.length} files uploaded`}</p>
+              )}
+            </div>
+            <DialogFooter>
+              <Button
+                type="submit"
+                onClick={handleSubmit}
+                disabled={error}
+                className="font-bold"
+              >
+                Buzz!
+              </Button>
+>>>>>>> 4ad35c2ae0d3395529412b2126ae8f5873009d2c
             </DialogFooter>
           </DialogContent>
         </div>

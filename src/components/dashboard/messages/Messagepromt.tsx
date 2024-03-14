@@ -8,51 +8,78 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer"
+} from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { Replyarea } from "./Replyarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-
-
-
-export default function Component({ message }: { message: { username: string, userlogo: string, text: string, verified: boolean, newmessage: boolean } }) {
+export default function Component({
+  message,
+}: {
+  message: {
+    username: string;
+    userlogo: string;
+    text: string;
+    verified: boolean;
+    newmessage: boolean;
+  };
+}) {
   const { username, userlogo, text, newmessage } = message;
   return (
-    <div className="flex flex-col h-fit w-[80%] border rounded-lg hover:cursor-pointer hover:bg-muted-foreground transition-colors duration-300   dark:border-gray-800 md:backdrop-blur-3xl bg-[#1F2937] bg-opacity-50">
+    <div className="flex h-fit w-[80%] flex-col rounded-lg border bg-[#1F2937] bg-opacity-50 transition-colors duration-300   hover:cursor-pointer hover:bg-muted-foreground dark:border-gray-800 md:backdrop-blur-3xl">
       <Drawer>
         <DrawerTrigger>
-          <div className="flex md:px-4 py-4 px-2  text-sm dark:bg-gray-950 items-center justify-between">
+          <div className="flex items-center justify-between px-2  py-4 text-sm dark:bg-gray-950 md:px-4">
             <div className="flex items-center gap-4">
-              <div className='relative w-10 h-10 rounded-full shrink-0'>
-                <Image src={userlogo} alt={''} fill />
+              <div className="relative h-10 w-10 shrink-0 rounded-full">
+                <Image src={userlogo} alt={""} fill className="rounded-full" />
               </div>
               <div className="grid gap-1 text-xs">
-                <div className="font-semibold text-lg">{username}</div>
+                <div className="text-lg font-semibold">{username}</div>
               </div>
             </div>
-            {(newmessage) && (
+            {newmessage && (
               <div className="text-primary">
                 <p>New message</p>
-              </div>)}
+              </div>
+            )}
           </div>
         </DrawerTrigger>
-        <DrawerContent className="bg-gray-950 container h-[90%]">
-          <DrawerHeader>
+        <DrawerContent className="container h-[90%] bg-gray-950">
+          <DrawerHeader className="">
             <DrawerTitle className="text-primary">
               <div className="flex items-center gap-4">
-                <div className='relative w-16 h-16 rounded-full shrink-0'>
-                  <Image src={userlogo} alt={''} fill />
+                <div className="relative h-16 w-16 shrink-0 rounded-full">
+                  <Image
+                    src={userlogo}
+                    alt={""}
+                    fill
+                    className="rounded-full"
+                  />
                 </div>
                 <div className="grid gap-1 text-xs">
+<<<<<<< HEAD
                   <div className="font-semibold text-primary-foregroundxl md:text-7xl">{username}</div>
+=======
+                  <div className="text-4xl font-semibold md:text-7xl">
+                    {username}
+                  </div>
+>>>>>>> 4ad35c2ae0d3395529412b2126ae8f5873009d2c
                 </div>
               </div>
             </DrawerTitle>
 
+<<<<<<< HEAD
             <DrawerDescription className="text-foreground max-h-[350px] text-lg text-start md:text-primary-foregroundxl">
               <ScrollArea className="h-full w-full px-3">{text}</ScrollArea></DrawerDescription>
 
+=======
+            <DrawerDescription className="max-h-[350px] text-start text-lg text-foreground md:my-auto md:text-xl">
+              <ScrollArea className="my-auto h-full w-full px-3">
+                {text}
+              </ScrollArea>
+            </DrawerDescription>
+>>>>>>> 4ad35c2ae0d3395529412b2126ae8f5873009d2c
           </DrawerHeader>
           <DrawerFooter>
             <Replyarea />
@@ -64,7 +91,5 @@ export default function Component({ message }: { message: { username: string, us
         </DrawerContent>
       </Drawer>
     </div>
-  )
+  );
 }
-
-
