@@ -1,5 +1,6 @@
 "use client";
 
+import EmojiPicker, { Theme } from "emoji-picker-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,50 +20,95 @@ import {
 } from "@/components/ui/select";
 import { EarthIcon, Smile } from "lucide-react";
 import Image from "next/image";
-import { type ChangeEvent, useRef, useState } from "react";
+import { useState } from "react";
 import { Textarea } from "../ui/textarea";
+import { api } from "@/trpc/react";
+import {
+  MultiFileDropzone,
+  type FileState,
+} from '@/components/MultifileDropzone';
+import { useEdgeStore } from '@/lib/EdgestoreProvider';
+import { cn } from "@/lib/utils";
+import { revalidateRoute } from "@/lib/actions";
+
+type FileUpload = {
+  url: string;
+  filename: string;
+} | undefined
 
 function PostBuzz() {
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const [error, setError] = useState(false);
-
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files) {
-      if (selectedFiles.length + files.length > 5) {
-        // Display an error message or take appropriate action
-        setError(true);
-      } else {
-        const newFiles = Array.from(files).slice(0, 5 - selectedFiles.length); // Limit to remaining slots
-        setSelectedFiles((prevFiles) => [...prevFiles, ...newFiles]);
-        setError(false);
-      }
+  const [textValue, setTextValue] = useState("");
+  const { mutate, isLoading } = api.posts.createPost.useMutation({
+    onSuccess: async () => {
+      await revalidateRoute("/dashboard")
+      setShowModal(false)
     }
-  };
+  })
+  const [errorMessage, setErrorMessage] = useState("");
+  const [fileStates, setFileStates] = useState<FileState[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<FileUpload[]>([])
+  const { edgestore } = useEdgeStore();
+  const [openEmoji, setopenEmoji] = useState(false);
+
+  const updateFileProgress = (key: string, progress: FileState['progress']) => {
+    setFileStates((fileStates) => {
+      const newFileStates = structuredClone(fileStates);
+      const fileState = newFileStates.find(
+        (fileState) => fileState.key === key,
+      );
+      if (fileState) {
+        fileState.progress = progress;
+      }
+      return newFileStates;
+    });
+  }
+
+  const uploadFiles = async () => {
+    const uploadedFiles = await Promise.all(
+      fileStates.map(async (fileState) => {
+        try {
+          if (fileState.progress !== 'PENDING') return;
+          const res = await edgestore.publicFiles.upload({
+            file: fileState.file,
+            onProgressChange: async (progress) => {
+              updateFileProgress(fileState.key, progress);
+              if (progress === 100) {
+                // wait 1 second to set it to complete
+                // so that the user can see the progress bar
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+                updateFileProgress(fileState.key, 'COMPLETE');
+              }
+            },
+          });
+          return { url: res.url, filename: fileState.file.name }
+        } catch (err) {
+          updateFileProgress(fileState.key, 'ERROR');
+          setErrorMessage(`Error uploading file: ${fileState.file.name}`)
+        }
+      }),
+    );
+    setUploadedFiles(uploadedFiles)
+  }
 
   const handleSubmit = () => {
-    // Here you can perform actions with the selected files, such as uploading them to a server
-    if (selectedFiles.length > 0) {
-      console.log("Selected files:", selectedFiles);
-      // Perform upload or other operations with the files
-    } else {
-      console.log("No files selected");
-    }
-    setShowModal(false);
-  };
+    const content = textValue;
 
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const handleInputClick = () => {
-    inputRef.current?.click();
-  };
+    if (!content || content === "") {
+      setErrorMessage("Please enter a valid input");
+      return;
+    }
+
+    mutate({ content, fileList: uploadedFiles })
+  }
 
   return (
     <div>
       <Dialog
         open={showModal}
-        onOpenChange={() => {
-          setShowModal((prev) => !prev);
+        onOpenChange={(newVal) => {
+          setShowModal(newVal);
+          setFileStates([])
         }}
       >
         <div className="mx-auto my-10  flex h-fit w-[18rem] max-w-xl  flex-col justify-between space-y-4 rounded-lg bg-[#1F2937] bg-opacity-50 px-2 py-2 drop-shadow-[0_0_35px_rgba(1,1,1,1.25)] md:w-full md:backdrop-blur-3xl">
@@ -76,7 +122,7 @@ function PostBuzz() {
 
             <div className="pl-8 md:pl-16">
               <Select>
-                <SelectTrigger className="w-fit rounded-xl bg-primary text-xs text-[#322904] transition-colors duration-500 hover:bg-yellow-500 md:text-base">
+                <SelectTrigger className="w-fit rounded-xl bg-primary text-xs text-[#322904] transition-colors duration-500 hover:bg-primary md:text-base">
                   <SelectValue
                     placeholder="Select privacy"
                     className="placeholder:font-bold"
@@ -121,11 +167,12 @@ function PostBuzz() {
                     className="cursor-pointer text-primary transition-all duration-200 hover:scale-110"
                     height={23}
                     width={23}
+                    onClick={() => setopenEmoji(!openEmoji)}
                   />
                 </DialogTrigger>
               </div>
               <DialogTrigger asChild>
-                <div className="flex h-fit w-fit cursor-pointer items-center justify-center rounded-full border-2 bg-primary px-4 py-1 text-[#322904] transition-colors duration-500 hover:bg-yellow-500">
+                <div className="flex h-fit w-fit cursor-pointer items-center justify-center rounded-full border-2 bg-primary px-4 py-1 text-[#322904] transition-colors duration-500 hover:bg-primary">
                   <p className="Buzz text-sm font-semibold md:text-base">
                     Buzz
                   </p>
@@ -133,59 +180,64 @@ function PostBuzz() {
               </DialogTrigger>
             </div>
           </div>
-          <DialogContent className="max-w-[400px] rounded-lg border-primary bg-[#030712] text-foreground md:max-w-[40rem]">
+          <DialogContent className="max-w-[400px] rounded-lg border-primary bg-background text-foreground md:max-w-[40rem]">
             <DialogHeader>
-              <DialogTitle className="text-2xl">Create some Buzz</DialogTitle>
+              <DialogTitle className="text-foreground text-2xl">Create some Buzz</DialogTitle>
               <DialogDescription>
                 Share what you want with users across BuzzHive!
               </DialogDescription>
             </DialogHeader>
-            <div className="flex flex-col gap-2  space-y-4  rounded-xl py-4">
+            <div className="flex flex-col space-y-4 rounded-xl">
               <Textarea
                 className="min-h-40 border-2 border-muted-foreground md:min-h-80"
                 placeholder="What's on your mind today?"
+                onChange={(e) => setTextValue(e.target.value)}
+                value={textValue}
               />
-
-              <div className="flex items-center">
-                <Button
-                  className="h-fit w-fit justify-around gap-4 border-2 border-muted-foreground bg-transparent text-foreground hover:bg-muted-foreground"
-                  onClick={handleInputClick}
-                >
-                  <Image
-                    src={"/mediaicon.svg"}
-                    alt={""}
-                    width={20}
-                    height={20}
-                  />
+              <MultiFileDropzone
+                value={fileStates}
+                className="w-full"
+                dropzoneOptions={{
+                  maxFiles: 5,
+                  maxSize: 1024 * 1024 * 4, // 4 MB
+                }}
+                onChange={setFileStates}
+                onFilesAdded={(addedFiles) => {
+                  setFileStates([...fileStates, ...addedFiles]);
+                }}
+              />
+            </div>
+            {errorMessage !== "" && <p className="text-destructive font-semibold">{errorMessage}</p>}
+            <DialogFooter>
+              <div className="flex justify-between items-center">
+                <Button variant="secondary" className={cn("visible", { "invisible": fileStates.length < 1 })} onClick={uploadFiles}
+                  disabled={!fileStates.filter((fileState) => fileState.progress === 'PENDING').length}>
                   Upload
                 </Button>
-                <input
-                  type="file"
-                  accept="image/*,video/mp4"
-                  multiple
-                  onChange={handleFileChange}
-                  ref={inputRef}
-                  className="hidden"
-                />
+                <div className="items-center relative flex gap-4">
+                  <Smile
+                    className="cursor-pointer text-primary transition-all duration-200 hover:scale-110"
+                    height={23}
+                    width={23}
+                    onClick={() => setopenEmoji(!openEmoji)}
+                  />
+                  <EmojiPicker
+                    open={openEmoji}
+                    theme={"dark" as Theme}
+                    className="!absolute bottom-12 right-0"
+                    height={300}
+                    onEmojiClick={(e) => {
+                      setTextValue((prev) => `${prev}${e.emoji}`)
+                    }} />
+                  <Button
+                    type="submit"
+                    onClick={handleSubmit}
+                    className="font-bold"
+                  >
+                    {isLoading ? "Sending your buzz..." : "Buzz!"}
+                  </Button>
+                </div>
               </div>
-              {error && (
-                <p className="text-center text-sm text-destructive">
-                  You can only upload up to five files. Try again
-                </p>
-              )}
-              {selectedFiles.length > 0 && (
-                <p className="text-center text-sm text-primary">{`${selectedFiles.length} files uploaded`}</p>
-              )}
-            </div>
-            <DialogFooter>
-              <Button
-                type="submit"
-                onClick={handleSubmit}
-                disabled={error}
-                className="font-bold"
-              >
-                Buzz!
-              </Button>
             </DialogFooter>
           </DialogContent>
         </div>

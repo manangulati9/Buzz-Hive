@@ -9,9 +9,10 @@ import Credentials from "next-auth/providers/credentials";
 import { env } from "@/env";
 import { db } from "@/server/db";
 import { users } from "./db/schema";
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { loginSchema } from "@/lib/zodSchemas";
 import bcrypt from "bcrypt"
+import { generateFromEmail } from "unique-username-generator";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -44,12 +45,55 @@ export const authOptions: NextAuthOptions = {
       session.user.id = token.userId;
       return session;
     },
-    jwt: ({ token, account }) => {
-      if (account && account.type === "credentials") {
-        token.userId = account.providerAccountId;
-      }
+    jwt: ({ token }) => {
+      token.userId = token.sub!;
       return token;
     },
+    signIn: async ({ user, account }) => {
+      if (account?.provider !== "credentials") {
+        if (!user.email || !user.name || !user.image) {
+          return false;
+        }
+
+        const [retrievedUser] = await db.select().from(users).where(eq(users.id, user.id));
+
+        if (retrievedUser) {
+          return true;
+        }
+
+        try {
+          let isUnique = false;
+          let count = 2;
+          let generatedUsernames: string[] = [];
+
+          while (!isUnique) {
+            generatedUsernames = Array.from({ length: 5 }).map(() => generateFromEmail(user.email!, count));
+            const usersQuery = await db.select().from(users).where(inArray(users.username, generatedUsernames));
+
+            if (usersQuery.length === 0) {
+              isUnique = true;
+            }
+            count++;
+          }
+
+          const uniqueUserame = generatedUsernames[0];
+
+          const newUser = {
+            id: user.id,
+            username: uniqueUserame,
+            name: user.name,
+            email: user.email,
+            image: user.image,
+          } satisfies typeof users.$inferInsert
+
+          await db.insert(users).values(newUser);
+        } catch (error) {
+          console.error(error)
+          return "/auth/signInError"
+        }
+      }
+      return true;
+    }
   },
   session: {
     strategy: "jwt",

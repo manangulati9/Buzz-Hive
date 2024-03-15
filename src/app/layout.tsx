@@ -4,6 +4,7 @@ import { TRPCReactProvider } from "@/trpc/react";
 import { Toaster } from "@/components/ui/toaster";
 import { getServerAuthSession } from "@/server/auth";
 import { AuthProvider } from "@/lib/AuthProvider";
+import { EdgeStoreProvider } from "@/lib/EdgestoreProvider";
 
 const inter = Inter({
   subsets: ['latin'],
@@ -28,7 +29,9 @@ export default async function RootLayout({
       <body className={inter.variable}>
         <AuthProvider session={session}>
           <TRPCReactProvider>
-            {children}
+            <EdgeStoreProvider>
+              {children}
+            </EdgeStoreProvider>
             <Toaster />
           </TRPCReactProvider>
         </AuthProvider>

@@ -22,7 +22,7 @@ export default function AuthenticationPage() {
       </Link>
       <div className={cn("flex items-center w-full flex-col space-y-4 justify-center md:p-4 lg:p-8")}>
         <div className="space-y-2 text-center">
-          <h1 className="text-3xl font-semibold tracking-tight">
+          <h1 className="text-primary-foregroundxl font-semibold tracking-tight">
             Login
           </h1>
           <p className="text-sm text-muted-foreground">
