@@ -20,7 +20,7 @@ type PostCardProps = {
 
 function PostCard({ post }: PostCardProps) {
   return (
-    <div className="mx-auto flex h-fit min-h-[10rem] w-[18rem] max-w-xl flex-col justify-between space-y-4 rounded-lg bg-[#1F2937] bg-opacity-50 p-4 shadow-primary drop-shadow-2xl md:min-h-[12rem] md:w-full md:backdrop-blur-3xl">
+    <div className="mx-auto flex h-fit min-h-[10rem] w-[18rem] max-w-5xl flex-col justify-between space-y-4 rounded-lg bg-[#1F2937] bg-opacity-50 p-4 shadow-primary drop-shadow-2xl md:min-h-[12rem] md:w-full md:backdrop-blur-3xl">
       <div className="flex flex-col space-y-4">
         <div className="flex items-center justify-between px-3">
           <Link
@@ -49,6 +49,7 @@ function PostCard({ post }: PostCardProps) {
               </div>
             </div>
           </Link>
+          <DeleteButton postId={post.id} />
         </div>
         <Link
           href={`/dashboard/posts/${post.id}`}
