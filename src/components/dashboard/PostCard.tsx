@@ -75,10 +75,10 @@ function PostCard({ post }: PostCardProps) {
       </div>
       <div className="flex items-center justify-around pt-2">
         <LikeButton postId={post.id} initialLikeCount={post.likeCount ?? 0} />
-        <div className="flex space-x-2">
+        <Link className="flex space-x-2" href={`/profile/${post.userData.id}`}>
           <MessageCircle />
           <p>{post.commentCount}</p>
-        </div>
+        </Link>
       </div>
     </div>
   );

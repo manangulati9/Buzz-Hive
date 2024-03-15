@@ -19,7 +19,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Menu } from "lucide-react";
-import { SessionProvider } from "next-auth/react";
+import { getServerAuthSession } from "@/server/auth";
 
 const testimonials = [
   {
@@ -81,7 +81,11 @@ const features = [
   },
 ];
 
-export default function Page() {
+export default async function Page() {
+  const session = await getServerAuthSession();
+
+  const isLoggedIn = !!session;
+
   return (
     <div className="flex min-h-[100dvh] flex-col">
       <header className="fixed z-50 flex w-full items-center justify-between bg-black px-4 py-2 lg:px-6">
@@ -164,7 +168,7 @@ export default function Page() {
                   className={buttonVariants({ variant: "default" })}
                   href="/dashboard"
                 >
-                  {true ? <p>Dashboard</p> : <p>SignIn</p>}
+                  {isLoggedIn ? "Dashboard" : "Sign In"}
                 </Link>
               </div>
             </div>
@@ -188,7 +192,7 @@ export default function Page() {
                     variant: "default",
                     className: "w-fit",
                   })}
-                  href="#"
+                  href="/auth/sign-up"
                 >
                   Create Account
                 </Link>
