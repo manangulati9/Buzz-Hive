@@ -154,7 +154,7 @@ export default async function Page() {
         </ScrollArea>
         <Link
           href={"/dashboard/messages"}
-          className="rounded-2xl border-2 px-4 py-2 transition-colors duration-500 hover:bg-muted-foreground"
+          className="rounded-2xl border-2 px-4 py-2 transition-colors duration-500 hover:bg-muted-foreground d"
         >
           Show All
         </Link>
