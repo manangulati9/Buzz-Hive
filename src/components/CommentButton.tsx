@@ -15,22 +15,23 @@ import { Button, buttonVariants } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import { api } from "@/trpc/react";
 import { revalidateRoute } from "@/lib/actions";
+import { MessageCircle } from "lucide-react";
 
 function CommentButton({ postId }: { postId: string }) {
   const [textValue, setTextValue] = useState("");
   const { mutate, isLoading } = api.comments.createComment.useMutation({
     onSuccess: async () => {
-      await revalidateRoute(`/dashboard/posts/${postId}`)
-    }
+      await revalidateRoute(`/dashboard/posts/${postId}`);
+    },
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setTextValue(e.target.value)
-  }
+    setTextValue(e.target.value);
+  };
 
   const handleSubmit = () => {
-    mutate({ content: textValue, postId })
-  }
+    mutate({ content: textValue, postId });
+  };
 
   return (
     <Dialog>
@@ -38,24 +39,36 @@ function CommentButton({ postId }: { postId: string }) {
         <DialogTrigger
           className={buttonVariants({
             variant: "default",
-            className: "bg-primary",
+            className: "rounded-full bg-primary",
           })}
         >
-          Comment
+          <MessageCircle className="h-6 w-6 stroke-black" />
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-3xl font-bold tracking-tighter">Add new comment</DialogTitle>
+            <DialogTitle className="text-3xl font-bold tracking-tighter">
+              Add new comment
+            </DialogTitle>
             <DialogDescription>
               Share your views with your content
             </DialogDescription>
           </DialogHeader>
-          <Textarea value={textValue} placeholder="Type here" className="min-h-[10rem]" onChange={handleChange} />
+          <Textarea
+            value={textValue}
+            placeholder="Type here"
+            className="min-h-[10rem]"
+            onChange={handleChange}
+          />
           <DialogFooter>
             <DialogClose asChild>
-              <Button type="submit" disabled={isLoading} onClick={handleSubmit} className="w-fit ml-auto mr-0">{
-                isLoading ? "Posting..." : "Post"
-              }</Button>
+              <Button
+                type="submit"
+                disabled={isLoading}
+                onClick={handleSubmit}
+                className="ml-auto mr-0 w-fit"
+              >
+                {isLoading ? "Posting..." : "Post"}
+              </Button>
             </DialogClose>
           </DialogFooter>
         </DialogContent>
