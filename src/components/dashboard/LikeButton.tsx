@@ -2,11 +2,10 @@
 
 import { Heart } from "lucide-react"
 import { Button } from "../ui/button"
-import { api } from "@/trpc/react"
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
-export default function({ postId, initialLikeCount }: { postId: string, initialLikeCount: number | null }) {
+export default function LikeButton({ postId, initialLikeCount }: { postId: string, initialLikeCount: number | null }) {
   // const { mutate: likePost, data } = api.likes.likePost.useMutation({o});
   // const { data: isLiked, refetch: refetchLikeStatus } = api.likes.isLiked.useQuery({ postId });
   // const { mutate: unlikePost } = api.likes.unlikePost.useMutation();

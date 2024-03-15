@@ -58,28 +58,18 @@ export default function Component({
                   />
                 </div>
                 <div className="grid gap-1 text-xs">
-<<<<<<< HEAD
-                  <div className="font-semibold text-primary-foregroundxl md:text-7xl">{username}</div>
-=======
                   <div className="text-4xl font-semibold md:text-7xl">
                     {username}
                   </div>
->>>>>>> 4ad35c2ae0d3395529412b2126ae8f5873009d2c
                 </div>
               </div>
             </DrawerTitle>
 
-<<<<<<< HEAD
-            <DrawerDescription className="text-foreground max-h-[350px] text-lg text-start md:text-primary-foregroundxl">
-              <ScrollArea className="h-full w-full px-3">{text}</ScrollArea></DrawerDescription>
-
-=======
             <DrawerDescription className="max-h-[350px] text-start text-lg text-foreground md:my-auto md:text-xl">
               <ScrollArea className="my-auto h-full w-full px-3">
                 {text}
               </ScrollArea>
             </DrawerDescription>
->>>>>>> 4ad35c2ae0d3395529412b2126ae8f5873009d2c
           </DrawerHeader>
           <DrawerFooter>
             <Replyarea />

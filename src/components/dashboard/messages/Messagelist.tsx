@@ -1,7 +1,7 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageCircle } from "lucide-react";
 import React from "react";
-import Messagepromt from "./Messagepromt";
+import Messagepromt from "./MessagePrompt";
 
 function Messagelist() {
   const messages = [
