@@ -12,28 +12,25 @@ export const postsRouter = createTRPCRouter({
   allPosts: protectedProcedure.input(z.object({ page: z.number() })).query(async ({ ctx, input }) => {
     const postsArr = await ctx.db.select().from(posts).orderBy(desc(posts.createdAt)).limit(10).offset(input.page * 10);
 
-    const postsData = []
+   const postsData =  await Promise.all(postsArr.map(async(post) => {
+    const [commentCount] = await ctx.db.select({ value: count() }).from(comments).where(eq(comments.postId, post.id)).groupBy(comments.postId); // Fetching comment count
+    const images = await ctx.db.select().from(postImages).orderBy(postImages.createdAt).where(eq(postImages.postId, post.id)); // Fetching post images
+    const [likeCount] = await ctx.db.select({ value: count() }).from(likes).where(eq(likes.postId, post.id)).groupBy(likes.postId); // Fetching post like count
+    const [userData] = await ctx.db.select().from(users).where(eq(users.id, post.authorId));
 
-    for (const post of postsArr) {
-      const [commentCount] = await ctx.db.select({ value: count() }).from(comments).where(eq(comments.postId, post.id)).groupBy(comments.postId); // Fetching comment count
-      const images = await ctx.db.select().from(postImages).orderBy(postImages.createdAt).where(eq(postImages.postId, post.id)); // Fetching post images
-      const [likeCount] = await ctx.db.select({ value: count() }).from(likes).where(eq(likes.postId, post.id)).groupBy(likes.postId); // Fetching post like count
-      const [userData] = await ctx.db.select().from(users).where(eq(users.id, post.authorId));
-
-      if (!userData) {
-        throw new TRPCError({ message: "Couldn't fetch user metadata for this post", code: "NOT_FOUND" })
-      }
-
-      const postData = {
-        ...post,
-        userData,
-        commentCount: commentCount ? commentCount.value : 0,
-        imagesArray: images,
-        likeCount: likeCount ? likeCount.value : 0,
-      }
-
-      postsData.push(postData)
+    if (!userData) {
+      throw new TRPCError({ message: "Couldn't fetch user metadata for this post", code: "NOT_FOUND" })
     }
+
+    return {
+      ...post,
+      userData,
+      commentCount: commentCount ? commentCount.value : 0,
+      imagesArray: images,
+      likeCount: likeCount ? likeCount.value : 0,
+    }
+
+  }))
 
     return postsData;
   }),
@@ -92,29 +89,26 @@ export const postsRouter = createTRPCRouter({
       throw new TRPCError({ message: "Post with given user id doesn't exist", code: "NOT_FOUND" })
     }
 
-    const postsData = []
-
-    for (const post of userPosts) {
+    const postsData =  await Promise.all(userPosts.map(async(post) => {
       const [commentCount] = await ctx.db.select({ value: count() }).from(comments).where(eq(comments.postId, post.id)).groupBy(comments.postId); // Fetching comment count
       const images = await ctx.db.select().from(postImages).orderBy(postImages.createdAt).where(eq(postImages.postId, post.id)); // Fetching post images
       const [likeCount] = await ctx.db.select({ value: count() }).from(likes).where(eq(likes.postId, post.id)).groupBy(likes.postId); // Fetching post like count
       const [userData] = await ctx.db.select().from(users).where(eq(users.id, post.authorId));
-
+  
       if (!userData) {
         throw new TRPCError({ message: "Couldn't fetch user metadata for this post", code: "NOT_FOUND" })
       }
-
-      const postData = {
+  
+      return {
         ...post,
         userData,
         commentCount: commentCount ? commentCount.value : 0,
         imagesArray: images,
         likeCount: likeCount ? likeCount.value : 0,
       }
-
-      postsData.push(postData)
-    }
-
+  
+    }))
+  
     return postsData;
   }),
 });
