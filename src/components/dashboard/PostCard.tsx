@@ -75,7 +75,7 @@ function PostCard({ post }: PostCardProps) {
       </div>
       <div className="flex items-center justify-around pt-2">
         <LikeButton postId={post.id} initialLikeCount={post.likeCount ?? 0} />
-        <Link className="flex space-x-2" href={`/profile/${post.userData.id}`}>
+        <Link className="flex space-x-2" href={`/dashboard/posts/${post.id}`}>
           <MessageCircle />
           <p>{post.commentCount}</p>
         </Link>
