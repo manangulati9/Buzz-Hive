@@ -128,11 +128,17 @@ export default async function Page() {
           <Stars color="var(--primary)" />
         </div>
         <PostBuzz />
-        <div className="flex flex-col space-y-14">
-          {posts.map((post) => (
-            <PostCard key={post.id} post={post} />
-          ))}
-        </div>
+        {posts.length ? (
+          <div className="flex flex-col space-y-14">
+            {posts.map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
+          </div>
+        ) : (
+          <div className="flex h-[50%] w-full items-center justify-center">
+            Maybe try adding some Buzz, as of now there is nothing to show
+          </div>
+        )}
       </div>
       <div className="fixed right-8 hidden max-w-sm flex-col items-center  md:flex md:w-full">
         <div className="mx-auto my-5 flex h-fit    w-[20rem] max-w-2xl  justify-between rounded-xl  bg-[#1F2937] bg-opacity-50 px-6 py-2 drop-shadow-[0_0_35px_rgba(1,1,1,1.25)] backdrop-blur-3xl md:w-full">

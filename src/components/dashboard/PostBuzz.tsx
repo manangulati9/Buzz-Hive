@@ -26,32 +26,36 @@ import { api } from "@/trpc/react";
 import {
   MultiFileDropzone,
   type FileState,
-} from '@/components/MultifileDropzone';
-import { useEdgeStore } from '@/lib/EdgestoreProvider';
+} from "@/components/MultifileDropzone";
+import { useEdgeStore } from "@/lib/EdgestoreProvider";
 import { cn } from "@/lib/utils";
 import { revalidateRoute } from "@/lib/actions";
+import { unstable_noStore as noStore } from "next/cache";
 
-type FileUpload = {
-  url: string;
-  filename: string;
-} | undefined
+type FileUpload =
+  | {
+      url: string;
+      filename: string;
+    }
+  | undefined;
 
 function PostBuzz() {
+  noStore();
   const [showModal, setShowModal] = useState(false);
   const [textValue, setTextValue] = useState("");
   const { mutate, isLoading } = api.posts.createPost.useMutation({
     onSuccess: async () => {
-      await revalidateRoute("/dashboard")
-      setShowModal(false)
-    }
-  })
+      await revalidateRoute("/dashboard");
+      setShowModal(false);
+    },
+  });
   const [errorMessage, setErrorMessage] = useState("");
   const [fileStates, setFileStates] = useState<FileState[]>([]);
-  const [uploadedFiles, setUploadedFiles] = useState<FileUpload[]>([])
+  const [uploadedFiles, setUploadedFiles] = useState<FileUpload[]>([]);
   const { edgestore } = useEdgeStore();
   const [openEmoji, setopenEmoji] = useState(false);
 
-  const updateFileProgress = (key: string, progress: FileState['progress']) => {
+  const updateFileProgress = (key: string, progress: FileState["progress"]) => {
     setFileStates((fileStates) => {
       const newFileStates = structuredClone(fileStates);
       const fileState = newFileStates.find(
@@ -62,13 +66,13 @@ function PostBuzz() {
       }
       return newFileStates;
     });
-  }
+  };
 
   const uploadFiles = async () => {
     const uploadedFiles = await Promise.all(
       fileStates.map(async (fileState) => {
         try {
-          if (fileState.progress !== 'PENDING') return;
+          if (fileState.progress !== "PENDING") return;
           const res = await edgestore.publicFiles.upload({
             file: fileState.file,
             onProgressChange: async (progress) => {
@@ -77,19 +81,19 @@ function PostBuzz() {
                 // wait 1 second to set it to complete
                 // so that the user can see the progress bar
                 await new Promise((resolve) => setTimeout(resolve, 1000));
-                updateFileProgress(fileState.key, 'COMPLETE');
+                updateFileProgress(fileState.key, "COMPLETE");
               }
             },
           });
-          return { url: res.url, filename: fileState.file.name }
+          return { url: res.url, filename: fileState.file.name };
         } catch (err) {
-          updateFileProgress(fileState.key, 'ERROR');
-          setErrorMessage(`Error uploading file: ${fileState.file.name}`)
+          updateFileProgress(fileState.key, "ERROR");
+          setErrorMessage(`Error uploading file: ${fileState.file.name}`);
         }
       }),
     );
-    setUploadedFiles(uploadedFiles)
-  }
+    setUploadedFiles(uploadedFiles);
+  };
 
   const handleSubmit = () => {
     const content = textValue;
@@ -99,8 +103,8 @@ function PostBuzz() {
       return;
     }
 
-    mutate({ content, fileList: uploadedFiles })
-  }
+    mutate({ content, fileList: uploadedFiles });
+  };
 
   return (
     <div>
@@ -108,7 +112,7 @@ function PostBuzz() {
         open={showModal}
         onOpenChange={(newVal) => {
           setShowModal(newVal);
-          setFileStates([])
+          setFileStates([]);
         }}
       >
         <div className="mx-auto my-10  flex h-fit w-[18rem] max-w-xl  flex-col justify-between space-y-4 rounded-lg bg-[#1F2937] bg-opacity-50 px-2 py-2 drop-shadow-[0_0_35px_rgba(1,1,1,1.25)] md:w-full md:backdrop-blur-3xl">
@@ -182,7 +186,9 @@ function PostBuzz() {
           </div>
           <DialogContent className="max-w-[400px] rounded-lg border-primary bg-background text-foreground md:max-w-[40rem]">
             <DialogHeader>
-              <DialogTitle className="text-foreground text-2xl">Create some Buzz</DialogTitle>
+              <DialogTitle className="text-2xl text-foreground">
+                Create some Buzz
+              </DialogTitle>
               <DialogDescription>
                 Share what you want with users across BuzzHive!
               </DialogDescription>
@@ -207,14 +213,26 @@ function PostBuzz() {
                 }}
               />
             </div>
-            {errorMessage !== "" && <p className="text-destructive font-semibold">{errorMessage}</p>}
+            {errorMessage !== "" && (
+              <p className="font-semibold text-destructive">{errorMessage}</p>
+            )}
             <DialogFooter>
-              <div className="flex justify-between items-center">
-                <Button variant="secondary" className={cn("visible", { "invisible": fileStates.length < 1 })} onClick={uploadFiles}
-                  disabled={!fileStates.filter((fileState) => fileState.progress === 'PENDING').length}>
+              <div className="flex items-center justify-between">
+                <Button
+                  variant="secondary"
+                  className={cn("visible", {
+                    invisible: fileStates.length < 1,
+                  })}
+                  onClick={uploadFiles}
+                  disabled={
+                    !fileStates.filter(
+                      (fileState) => fileState.progress === "PENDING",
+                    ).length
+                  }
+                >
                   Upload
                 </Button>
-                <div className="items-center relative flex gap-4">
+                <div className="relative flex items-center gap-4">
                   <Smile
                     className="cursor-pointer text-primary transition-all duration-200 hover:scale-110"
                     height={23}
@@ -227,8 +245,9 @@ function PostBuzz() {
                     className="!absolute bottom-12 right-0"
                     height={300}
                     onEmojiClick={(e) => {
-                      setTextValue((prev) => `${prev}${e.emoji}`)
-                    }} />
+                      setTextValue((prev) => `${prev}${e.emoji}`);
+                    }}
+                  />
                   <Button
                     type="submit"
                     onClick={handleSubmit}
