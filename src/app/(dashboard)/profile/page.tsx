@@ -9,7 +9,7 @@ export default async function Page() {
   const posts = await api.posts.postByUserId.query({ userId: user.id });
 
   return (
-    <div className="mx-auto flex min-h-[100dvh] flex-col text-white md:max-w-[67rem]">
+    <div className="mx-auto flex min-h-[100dvh] flex-col text-white md:max-w-[60rem]">
       <main className="container flex-1 space-y-10 p-10">
         <div className="container flex items-center gap-6 p-4">
           <div className="flex items-center justify-center lg:justify-start">
