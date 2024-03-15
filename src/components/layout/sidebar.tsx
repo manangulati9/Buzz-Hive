@@ -72,13 +72,7 @@ export default function Sidebar() {
               )}
             />
             {true && (
-              <p
-                className={cn(
-                  "text-primary-foregroundxl font-bold text-primary",
-                )}
-              >
-                BuzzHive
-              </p>
+              <p className={cn("text-2xl font-bold text-primary")}>BuzzHive</p>
             )}
           </div>
           <div className="flex h-full flex-col justify-between">

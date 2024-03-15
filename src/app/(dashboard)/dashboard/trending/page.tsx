@@ -118,7 +118,7 @@ const messages = [
 
 async function Page() {
   noStore();
-  const posts = await api.posts.allPosts.query({ page: 3 });
+  const posts = await api.posts.allPosts.query({ page: 0 });
 
   return (
     <div className="container relative mx-auto flex min-h-screen w-full max-w-none justify-around py-10 text-foreground">
@@ -128,7 +128,7 @@ async function Page() {
           <Flame color="yellow" />
         </div>
         <PostBuzz />
-        {posts.length ? (
+        {posts.length > 0 ? (
           <div className="flex flex-col space-y-14">
             {posts.map((post) => (
               <PostCard key={post.id} post={post} />
