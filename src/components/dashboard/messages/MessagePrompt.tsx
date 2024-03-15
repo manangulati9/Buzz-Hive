@@ -58,7 +58,7 @@ export default function Component({
                   />
                 </div>
                 <div className="grid gap-1 text-xs">
-                  <div className="text-4xl font-semibold md:text-7xl">
+                  <div className="text-4xl font-semibold md:text-5xl">
                     {username}
                   </div>
                 </div>
@@ -66,16 +66,20 @@ export default function Component({
             </DrawerTitle>
 
             <DrawerDescription className="max-h-[350px] text-start text-lg text-foreground md:my-auto md:text-xl">
-              <ScrollArea className="my-auto h-full w-full px-3">
+              <ScrollArea className="my-10 h-full w-full px-3">
                 {text}
               </ScrollArea>
             </DrawerDescription>
           </DrawerHeader>
           <DrawerFooter>
-            <Replyarea />
-            <Button>Send</Button>
+            <div className="flex items-center gap-2">
+              <Replyarea />
+              <Button className="ml-auto w-fit p-4">Send</Button>
+            </div>
             <DrawerClose>
-              <Button variant="outline">Cancel</Button>
+              <Button className="ml-0 w-fit" variant="outline">
+                Cancel
+              </Button>
             </DrawerClose>
           </DrawerFooter>
         </DrawerContent>
