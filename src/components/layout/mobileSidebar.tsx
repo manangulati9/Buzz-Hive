@@ -5,6 +5,7 @@ import {
   ChevronLeftCircle,
   Home,
   LogOut,
+  Menu,
   MessageCircle,
   TrendingUp,
   User2,
@@ -37,17 +38,30 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="z-50 h-full p-4 md:p-0">
+    <div className="fixed z-50 h-full  md:p-0 md:hidden w-full">
+      <div className="flex w-full justify-between px-5 pt-7 pb-2 items-center bg-black">
       <div
         onClick={() => setisClicked(!isClicked)}
-        className="fixed left-4 top-4 z-50 h-10 w-10 md:hidden"
+        className="z-50 h-10 w-10 md:hidden relative flex justify-center items-center"
       >
-        <Image src={"/logo.svg"} alt={""} fill />
+        <Menu className=""/>
+      </div>
+      <Link
+        
+          className=" z-50 h-10 w-10 md:hidden relative" href={"/"}      >
+        <Image src={'/logo.svg'} alt={""} fill />
+      </Link>
+      <div
+        
+        className=" z-50 h-10 w-10 md:hidden relative opacity-0"
+      >
+        <Image src={'/'} alt={""} fill className="rounded-full"/>
+      </div>
       </div>
       <div
         ref={ref}
         className={cn(
-          "fixed left-0  top-0 z-50 h-full  w-60 border-opacity-50 drop-shadow-[0_35px_35px_rgba(1,1,1,1.25)] backdrop-blur-3xl transition-all duration-300",
+          "fixed left-0  top-0 z-50 h-full  w-60 border-opacity-50 drop-shadow-[0_35px_35px_rgba(1,1,1,1.25)] backdrop-blur-3xl shadow-md shadow-primary transition-all duration-300",
           {
             ["-translate-x-full opacity-0 md:translate-x-0 md:scale-100 md:opacity-100"]:
               isClicked,
@@ -57,7 +71,7 @@ export default function Sidebar() {
         onMouseEnter={() => setisHovering(false)}
         onMouseLeave={() => setisHovering(true)}
       >
-        <div className="flex  h-full flex-col bg-[#1F2937] bg-opacity-50 pb-5 pt-20 backdrop-blur-3xl">
+        <div className="flex  h-full flex-col  pb-5 pt-20 backdrop-blur-3xl">
           <div id="logo" className="flex items-center justify-center space-x-3">
             <Image
               src={"/logo.svg"}
@@ -65,7 +79,7 @@ export default function Sidebar() {
               width={50}
               height={50}
               className={cn(
-                "rounded-full  bg-[#1F2937] bg-opacity-50 backdrop-blur-3xl",
+                "rounded-full   backdrop-blur-3xl",
                 {
                   [""]: isClicked,
                 },

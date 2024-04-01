@@ -7,6 +7,7 @@ import Link from "next/link";
 import PostBuzz from "@/components/dashboard/PostBuzz";
 import { api } from "@/trpc/server";
 import { unstable_noStore as noStore } from "next/cache";
+import PostCards from "@/components/dashboard/PostCards";
 
 const messages = [
   {
@@ -121,17 +122,11 @@ export default async function Page() {
   const posts = await api.posts.allPosts.query({ page: 0 });
 
   return (
-    <div className="container relative mx-auto flex min-h-screen w-full max-w-none justify-around py-10 text-foreground">
-      <div className=" w-full  ">
-        <div className="mx-auto my-5  flex h-fit  w-[18rem] max-w-xl  justify-between rounded-xl  bg-[#1F2937] bg-opacity-50 px-6 py-2 drop-shadow-[0_0_35px_rgba(1,1,1,1.25)] md:w-full md:backdrop-blur-3xl">
-          <p className="font-bold">Latest Buzz</p>
-          <Stars color="var(--primary)" />
-        </div>
-        <PostBuzz />
-        {posts.length ? (
+    <div className="container relative mx-auto flex min-h-screen w-full max-w-none justify-around py-28 text-foreground">
+      {posts.length ? (
           <div className="flex flex-col space-y-14">
             {posts.map((post) => (
-              <PostCard key={post.id} post={post} />
+              <PostCards key={post.id} post={post} />
             ))}
           </div>
         ) : (
@@ -139,26 +134,6 @@ export default async function Page() {
             Maybe try adding some Buzz, as of now there is nothing to show
           </div>
         )}
-      </div>
-      <div className="fixed right-8 hidden max-w-sm flex-col items-center  md:flex md:w-full">
-        <div className="mx-auto my-5 flex h-fit    w-[20rem] max-w-2xl  justify-between rounded-xl  bg-[#1F2937] bg-opacity-50 px-6 py-2 drop-shadow-[0_0_35px_rgba(1,1,1,1.25)] backdrop-blur-3xl md:w-full">
-          <p className="font-bold">Messages</p>
-          <MessageCircle color="var(--primary)" />
-        </div>
-        <ScrollArea className="h-[400px] w-full p-3">
-          <div className="my-16 flex  flex-col space-y-10">
-            {messages?.map((message) => (
-              <MessageTab key={message.username} message={message} />
-            ))}
-          </div>
-        </ScrollArea>
-        <Link
-          href={"/dashboard/messages"}
-          className="rounded-2xl border-2 px-4 py-2 transition-colors duration-500 hover:bg-muted-foreground d"
-        >
-          Show All
-        </Link>
-      </div>
     </div>
   );
 }
