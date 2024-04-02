@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/carousel";
 import { AspectRatio } from "../ui/aspect-ratio";
 import LikeButton from "./LikeButton";
-import { RouterOutputs } from "@/trpc/shared";
+import type { RouterOutputs } from "@/trpc/shared";
 import DeleteButton from "../DeleteButton";
 
 type PostCardProps = {
@@ -74,7 +74,7 @@ function PostCard({ post }: PostCardProps) {
         </Link>
       </div>
       <div className="flex items-center justify-around pt-2">
-        <LikeButton postId={post.id} initialLikeCount={post.likeCount ?? 0} />
+        {/* <LikeButton postId={post.id} initialLikeCount={post.likeCount ?? 0} /> */}
         <Link className="flex space-x-2" href={`/dashboard/posts/${post.id}`}>
           <MessageCircle />
           <p>{post.commentCount}</p>

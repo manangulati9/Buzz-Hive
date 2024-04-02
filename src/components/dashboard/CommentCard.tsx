@@ -1,5 +1,5 @@
 import { api } from "@/trpc/server";
-import { RouterOutputs } from "@/trpc/shared";
+import type { RouterOutputs } from "@/trpc/shared";
 import { LucideBadgeCheck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

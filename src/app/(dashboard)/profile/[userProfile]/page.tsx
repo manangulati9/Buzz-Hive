@@ -1,7 +1,7 @@
-import PostCard from "@/components/dashboard/PostCard";
 import Image from "next/image";
 import { api } from "@/trpc/server";
 import { unstable_noStore as noStore } from "next/cache";
+import PostCards from "@/components/dashboard/PostCards";
 
 export default async function Page({
   params,
@@ -52,7 +52,7 @@ export default async function Page({
         </div>
         <div className="flex flex-col space-y-14">
           {posts.map((post) => (
-            <PostCard key={post.id} post={post} />
+            <PostCards key={post.id} post={post} />
           ))}
         </div>
       </main>

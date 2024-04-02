@@ -1,90 +1,107 @@
-"use client"
+"use client";
 
-import React from 'react'
-import { BackgroundGradient } from '../ui/background-gradient'
-import Image from 'next/image'
-import { Heart, LucideBadgeCheck, MessageCircle } from 'lucide-react'
-import { AspectRatio } from '@radix-ui/react-aspect-ratio'
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '../ui/carousel'
-import { RouterOutputs } from '@/trpc/shared'
-import LikeButton from './LikeButton'
+import React from "react";
+import { BackgroundGradient } from "../ui/background-gradient";
+import Image from "next/image";
+import { Heart, LucideBadgeCheck, MessageCircle } from "lucide-react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "../ui/carousel";
+import type { RouterOutputs } from "@/trpc/shared";
+import Link from "next/link";
 
 type PostCardProps = {
-    post: RouterOutputs["posts"]["postByUserId"][number];
-  };
-  
-  function PostCards({ post }: PostCardProps) {
-  return (
-<div >
-      <BackgroundGradient className="rounded-[22px] max-w-xs md:max-w-3xl p-4 md:p-10 bg-black backdrop-blur-3xl dark:bg-zinc-900">
-        <div className='flex items-center gap-2'>
-            <div className='h-12 w-12 relative rounded-full'>
-            <Image src={post.userData.image ?? "/logo.svg"} alt={''} fill className='rounded-full'/>
-            </div>
-        <div>
-          <div className='flex items-center gap-2'>
+  post: RouterOutputs["posts"]["postByUserId"][number];
+};
 
-        <p className="text-base sm:text-xl text-primary  dark:text-neutral-200">
-        {post.userData.name}
-        </p>
-        <div className="scale-75 md:scale-100">
-                  {post.userData.verified && <LucideBadgeCheck color="gold" />}
-        </div>
+function PostCards({ post }: PostCardProps) {
+  return (
+    <div>
+      <BackgroundGradient className="max-w-xs rounded-[22px] bg-black p-4 backdrop-blur-3xl dark:bg-zinc-900 md:max-w-3xl md:p-10">
+        <Link
+          className="flex items-center gap-2"
+          href={`/profile/${post.userData.id}`}
+        >
+          <div className="relative h-12 w-12 rounded-full">
+            <Image
+              src={post.userData.image ?? "/logo.svg"}
+              alt={""}
+              fill
+              className="rounded-full"
+            />
           </div>
-        <p className="text-base sm:text-xl text-muted-foreground  dark:text-neutral-200">
-        {`@${post.userData.username}`}
-        </p>
-        </div>
-        </div>
-{post.imagesArray && post.imagesArray.length > 0 && (
-            <Carousel className="container h-[15rem] w-[13rem] object-cover md:h-[15rem] md:w-[25rem] flex justify-center items-center">
+          <div>
+            <div className="flex items-center gap-2">
+              <p className="text-base text-primary dark:text-neutral-200  sm:text-xl">
+                {post.userData.name}
+              </p>
+              <div className="scale-75 md:scale-100">
+                {post.userData.verified && <LucideBadgeCheck color="gold" />}
+              </div>
+            </div>
+            <p className="text-base text-muted-foreground dark:text-neutral-200  sm:text-xl">
+              {`@${post.userData.username}`}
+            </p>
+          </div>
+        </Link>
+        <Link href={`/dashboard/posts/${post.id}`}>
+          {post.imagesArray && post.imagesArray.length > 0 && (
+            <Carousel className="container flex h-[15rem] w-[13rem] items-center justify-center object-cover md:h-[15rem] md:w-[25rem]">
               <CarouselContent>
                 {post.imagesArray.map((img) => (
-                  <CarouselItem key={img.id} className="w-[12rem] h-52 relative object-cover">
+                  <CarouselItem
+                    key={img.id}
+                    className="relative h-52 w-[12rem] object-cover"
+                  >
                     <Image
-            src={img.url}
-            alt="jordans"
-            fill
-            className="object-cover my-4"
-            /> 
+                      src={img.url}
+                      alt="jordans"
+                      fill
+                      className="my-4 object-cover"
+                    />
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              
-              {post.imagesArray.length>1 && <CarouselNext />}
-              {post.imagesArray.length>1 && <CarouselPrevious />}
+
+              {post.imagesArray.length > 1 && <CarouselNext />}
+              {post.imagesArray.length > 1 && <CarouselPrevious />}
             </Carousel>
           )}
 
-{/* <Image
+          {/* <Image
             src={`/logo.svg`}
             alt="jordans"
             height="400"
             width="400"
             className="object-contain my-4"
             /> */}
- 
-        <p className="text-sm text-foreground">
-        {post.content}
-        </p>
-        <div className='flex justify-between px-10'>
 
-        <button className="rounded-full pl-4 pr-1 py-1 text-white flex items-center space-x-1 bg-black mt-4 text-xs font-bold dark:bg-zinc-800">
-          <Heart/>
-          <span className="bg-zinc-700 rounded-full text-[0.6rem] px-2 py-0 text-white">
-            {post.likeCount}
-          </span>
-        </button>
-        <button className="rounded-full pl-4 pr-1 py-1 text-white flex items-center space-x-1 bg-black mt-4 text-xs font-bold dark:bg-zinc-800">
-          <MessageCircle/>
-          <span className="bg-zinc-700 rounded-full text-[0.6rem] px-2 py-0 text-white">
-          {post.commentCount}
-          </span>
-        </button>
+          <p className="text-sm text-foreground">{post.content}</p>
+        </Link>
+        <div className="flex justify-between px-10">
+          <button className="mt-4 flex items-center space-x-1 rounded-full bg-black py-1 pl-4 pr-1 text-xs font-bold text-white dark:bg-zinc-800">
+            <Heart />
+            <span className="rounded-full bg-zinc-700 px-2 py-0 text-[0.6rem] text-white">
+              {post.likeCount}
+            </span>
+          </button>
+          <Link
+            className="mt-4 flex items-center space-x-1 rounded-full bg-black py-1 pl-4 pr-1 text-xs font-bold text-white dark:bg-zinc-800"
+            href={`/dashboard/posts/${post.id}`}
+          >
+            <MessageCircle />
+            <span className="rounded-full bg-zinc-700 px-2 py-0 text-[0.6rem] text-white">
+              {post.commentCount}
+            </span>
+          </Link>
         </div>
       </BackgroundGradient>
     </div>
-  )
+  );
 }
 
-export default PostCards
+export default PostCards;

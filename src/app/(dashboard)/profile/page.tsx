@@ -1,4 +1,3 @@
-import PostCard from "@/components/dashboard/PostCard";
 import Image from "next/image";
 import { api } from "@/trpc/server";
 import { unstable_noStore as noStore } from "next/cache";

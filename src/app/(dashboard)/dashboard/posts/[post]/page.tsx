@@ -1,7 +1,7 @@
 import CommentButton from "@/components/CommentButton";
 import CommentCard from "@/components/dashboard/CommentCard";
 import { api } from "@/trpc/server";
-import { Heart, LucideBadgeCheck, MessageCircle } from "lucide-react";
+import { LucideBadgeCheck, MessageCircle } from "lucide-react";
 import Image from "next/image";
 import {
   Carousel,
@@ -65,7 +65,7 @@ async function Page({ params }: { params: { post: string } }) {
         )}
 
         <div className="container flex max-w-xs items-center justify-between">
-          <LikeButton postId={post.id} initialLikeCount={post.likeCount ?? 0} />
+          {/* <LikeButton postId={post.id} initialLikeCount={post.likeCount ?? 0} /> */}
           <div className="flex space-x-2">
             <MessageCircle />
             <p>{post.commentCount}</p>
