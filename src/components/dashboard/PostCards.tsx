@@ -21,7 +21,7 @@ type PostCardProps = {
 function PostCards({ post }: PostCardProps) {
   return (
     <div>
-      <BackgroundGradient className="max-w-xs rounded-[22px] bg-black p-4 backdrop-blur-3xl dark:bg-zinc-900 md:max-w-3xl md:p-10">
+      <BackgroundGradient className="max-w-md rounded-[22px] bg-black p-4 backdrop-blur-3xl dark:bg-zinc-900 md:max-w-3xl md:p-10">
         <Link
           className="flex items-center gap-2"
           href={`/profile/${post.userData.id}`}

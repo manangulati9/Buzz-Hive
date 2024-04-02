@@ -6,9 +6,11 @@ import type { ReactNode } from "react";
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div>
-      <PcSidebar />
       <Sidebar />
-      {children}
+      <div className="md:mx-auto md:max-w-7xl">
+        <PcSidebar />
+        {children}
+      </div>
       <BackgroundBeams className="fixed top-0" />
     </div>
   );

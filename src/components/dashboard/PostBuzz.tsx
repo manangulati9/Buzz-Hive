@@ -103,7 +103,7 @@ function PostBuzz() {
   };
 
   return (
-    <BackgroundGradient className="flex w-full max-w-xs justify-between rounded-[22px] bg-black p-4 backdrop-blur-3xl dark:bg-zinc-900  md:max-w-3xl md:p-10">
+    <BackgroundGradient className="flex w-full max-w-md justify-between rounded-[22px] bg-black p-4 backdrop-blur-3xl dark:bg-zinc-900  md:max-w-3xl md:p-10">
       <Dialog
         open={showModal}
         onOpenChange={(newVal) => {
