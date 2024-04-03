@@ -49,8 +49,6 @@ function PostBuzz() {
   const { edgestore } = useEdgeStore();
   const [openEmoji, setopenEmoji] = useState(false);
 
-  // const words = "Create a new Buzz!";
-
   const updateFileProgress = (key: string, progress: FileState["progress"]) => {
     setFileStates((fileStates) => {
       const newFileStates = structuredClone(fileStates);
@@ -120,7 +118,7 @@ function PostBuzz() {
               <p className="text-base font-bold">What&apos; Buzzin?</p>
             </div>
 
-            <div className=" flex h-fit items-center justify-center text-center  text-muted-foreground">
+            <div className=" flex h-fit items-center justify-center text-center  text-xl  text-muted-foreground md:text-3xl">
               Create a new Buzz!
             </div>
 

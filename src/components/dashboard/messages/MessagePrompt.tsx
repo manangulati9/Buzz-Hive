@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Replyarea } from "./Replyarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { BackgroundGradient } from "@/components/ui/background-gradient";
 
 export default function Component({
   message,
@@ -26,10 +27,10 @@ export default function Component({
 }) {
   const { username, userlogo, text, newmessage } = message;
   return (
-    <div className="flex h-fit w-[80%] flex-col rounded-lg border bg-[#1F2937] bg-opacity-50 transition-colors duration-300   hover:cursor-pointer hover:bg-muted-foreground dark:border-gray-800 md:backdrop-blur-3xl">
+    <BackgroundGradient className="flex w-full max-w-md justify-between rounded-[22px] bg-black p-4 backdrop-blur-3xl dark:bg-zinc-900  md:max-w-3xl md:p-10">
       <Drawer>
-        <DrawerTrigger>
-          <div className="flex items-center justify-between px-2  py-4 text-sm dark:bg-gray-950 md:px-4">
+        <DrawerTrigger className="w-full">
+          <div className="flex w-full items-center justify-between px-2  py-4 text-sm dark:bg-gray-950 md:px-4">
             <div className="flex items-center gap-4">
               <div className="relative h-10 w-10 shrink-0 rounded-full">
                 <Image src={userlogo} alt={""} fill className="rounded-full" />
@@ -84,6 +85,6 @@ export default function Component({
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
-    </div>
+    </BackgroundGradient>
   );
 }

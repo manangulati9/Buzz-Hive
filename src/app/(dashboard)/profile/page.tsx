@@ -2,6 +2,7 @@ import Image from "next/image";
 import { api } from "@/trpc/server";
 import { unstable_noStore as noStore } from "next/cache";
 import PostCardUser from "@/components/dashboard/PostCardUser";
+import { BackgroundGradient } from "@/components/ui/background-gradient";
 
 export default async function Page() {
   noStore();
@@ -9,7 +10,7 @@ export default async function Page() {
   const posts = await api.posts.postByUserId.query({ userId: user.id });
 
   return (
-    <div className="mx-auto flex min-h-[100dvh] flex-col text-white md:max-w-[60rem]">
+    <div className=" mx-auto flex min-h-[100dvh] max-w-md flex-col pt-24 text-white md:max-w-2xl md:pt-0">
       <main className="container flex-1 space-y-10 p-10">
         <div className="container flex items-center gap-6 p-4">
           <div className="flex items-center justify-center lg:justify-start">
@@ -41,10 +42,10 @@ export default async function Page() {
             </div>
           </div>
         </div>
-        <div className="my-5 flex h-fit w-full max-w-xl justify-between rounded-xl bg-[#1F2937] bg-opacity-50 px-6 py-2 drop-shadow-[0_0_35px_rgba(1,1,1,1.25)] md:max-w-none md:backdrop-blur-3xl">
+        <BackgroundGradient className="flex w-full max-w-md justify-between rounded-[22px] bg-black p-4 backdrop-blur-3xl dark:bg-zinc-900  md:max-w-3xl md:p-10">
           <p className="font-bold text-primary">Buzzes</p>
           <Image src={"/bee.png"} alt={""} width={25} height={25} />
-        </div>
+        </BackgroundGradient>
         <div className="flex flex-col space-y-14">
           {posts.map((post) => (
             <PostCardUser key={post.id} post={post} />

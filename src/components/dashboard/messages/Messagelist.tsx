@@ -2,6 +2,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageCircle } from "lucide-react";
 import React from "react";
 import Messagepromt from "./MessagePrompt";
+import { BackgroundGradient } from "@/components/ui/background-gradient";
 
 const messages = [
   {
@@ -113,12 +114,12 @@ const messages = [
 function Messagelist() {
   return (
     <div className="h-full w-full overflow-hidden rounded-2xl  text-foreground">
-      <div className=" mx-auto my-5 flex h-fit    w-[20rem] max-w-2xl  justify-between rounded-xl  bg-[#1F2937] bg-opacity-50 px-6 py-2 drop-shadow-[0_0_35px_rgba(1,1,1,1.25)] md:w-full md:backdrop-blur-3xl">
+      <BackgroundGradient className="flex w-full max-w-md justify-between rounded-[22px] bg-black p-4 backdrop-blur-3xl dark:bg-zinc-900  md:max-w-3xl md:p-10">
         <p className="font-bold">Messages</p>
         <MessageCircle color="yellow" />
-      </div>
+      </BackgroundGradient>
       <ScrollArea className="h-full w-full p-3">
-        <div className="my-16 flex  flex-col items-center space-y-10">
+        <div className="my-16 flex w-full  flex-col  space-y-10">
           {messages?.map((message) => (
             <Messagepromt key={message.username} message={message} />
           ))}
