@@ -1,10 +1,11 @@
 import { api } from "@/trpc/server";
-import { RouterOutputs } from "@/trpc/shared";
+import type { RouterOutputs } from "@/trpc/shared";
 import { LucideBadgeCheck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { unstable_noStore as noStore } from "next/cache";
+import { BackgroundGradient } from "../ui/background-gradient";
 
 type Comment = RouterOutputs["comments"]["getPostComments"][0];
 
@@ -15,7 +16,7 @@ async function CommentCard({ comment }: { comment: Comment }) {
     : null;
 
   return (
-    <div className="mx-auto my-5  flex  h-fit w-[23rem] max-w-5xl  flex-col justify-between  gap-5 rounded-xl  bg-[#1F2937] bg-opacity-50  px-6 py-4 drop-shadow-[0_0_35px_rgba(1,1,1,1.25)] md:w-full md:backdrop-blur-3xl">
+    <BackgroundGradient className="flex w-full max-w-md flex-col justify-between gap-2 rounded-[22px] bg-black p-4 backdrop-blur-3xl dark:bg-zinc-900  md:max-w-3xl md:p-10">
       <div className="flex flex-col space-y-2">
         <Link
           className="flex items-center justify-start space-x-2 text-center"
@@ -47,7 +48,7 @@ async function CommentCard({ comment }: { comment: Comment }) {
         <p className="text-primary">Commented:</p>
         <p>{comment.content}</p>
       </div>
-    </div>
+    </BackgroundGradient>
   );
 }
 

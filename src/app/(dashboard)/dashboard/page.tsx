@@ -1,12 +1,14 @@
-import PostCard from "@/components/dashboard/PostCard";
-import { MessageCircle, Stars } from "lucide-react";
 import React from "react";
-import MessageTab from "@/components/dashboard/MessageTab";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import Link from "next/link";
 import PostBuzz from "@/components/dashboard/PostBuzz";
 import { api } from "@/trpc/server";
 import { unstable_noStore as noStore } from "next/cache";
+import PostCards from "@/components/dashboard/PostCards";
+import LatestBuzz from "@/components/dashboard/LatestBuzz";
+import MessageTab from "@/components/dashboard/MessageTab";
+import { MessageCircle } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { BackgroundGradient } from "@/components/ui/background-gradient";
+import Link from "next/link";
 
 const messages = [
   {
@@ -121,17 +123,15 @@ export default async function Page() {
   const posts = await api.posts.allPosts.query({ page: 0 });
 
   return (
-    <div className="container relative mx-auto flex min-h-screen w-full max-w-none justify-around py-10 text-foreground">
-      <div className=" w-full  ">
-        <div className="mx-auto my-5  flex h-fit  w-[18rem] max-w-xl  justify-between rounded-xl  bg-[#1F2937] bg-opacity-50 px-6 py-2 drop-shadow-[0_0_35px_rgba(1,1,1,1.25)] md:w-full md:backdrop-blur-3xl">
-          <p className="font-bold">Latest Buzz</p>
-          <Stars color="var(--primary)" />
-        </div>
+    <div className="container relative -z-0 mx-auto flex min-h-screen w-full max-w-md md:max-w-7xl">
+      <div className="-z-50 hidden w-full max-w-xs md:block"></div>
+      <div className="container relative z-50 mx-auto flex min-h-screen w-full max-w-md flex-col gap-14 px-0 pt-24 text-foreground  md:max-w-xl md:pt-0 ">
+        <LatestBuzz />
         <PostBuzz />
         {posts.length ? (
           <div className="flex flex-col space-y-14">
             {posts.map((post) => (
-              <PostCard key={post.id} post={post} />
+              <PostCards key={post.id} post={post} />
             ))}
           </div>
         ) : (
@@ -140,24 +140,26 @@ export default async function Page() {
           </div>
         )}
       </div>
-      <div className="fixed right-8 hidden max-w-sm flex-col items-center  md:flex md:w-full">
-        <div className="mx-auto my-5 flex h-fit    w-[20rem] max-w-2xl  justify-between rounded-xl  bg-[#1F2937] bg-opacity-50 px-6 py-2 drop-shadow-[0_0_35px_rgba(1,1,1,1.25)] backdrop-blur-3xl md:w-full">
-          <p className="font-bold">Messages</p>
-          <MessageCircle color="var(--primary)" />
+      <div className="container relative z-50 hidden w-full max-w-xs md:block">
+        <div className="fixed hidden w-full max-w-xs  flex-col   md:flex">
+          <BackgroundGradient className="flex w-full  justify-between rounded-[22px] bg-black p-4 backdrop-blur-3xl dark:bg-zinc-900   md:p-10">
+            <p className="font-bold">Messages</p>
+            <MessageCircle color="gold" />
+          </BackgroundGradient>
+          <ScrollArea className="container h-[400px] w-full max-w-xs p-3">
+            <div className="my-16 flex  flex-col space-y-10">
+              {messages?.map((message) => (
+                <MessageTab key={message.username} message={message} />
+              ))}
+            </div>
+          </ScrollArea>
+          <Link
+            href={"/dashboard/messages"}
+            className="rounded-2xl border-2 px-4 py-2 text-center transition-colors duration-500 hover:bg-muted-foreground"
+          >
+            Show All
+          </Link>
         </div>
-        <ScrollArea className="h-[400px] w-full p-3">
-          <div className="my-16 flex  flex-col space-y-10">
-            {messages?.map((message) => (
-              <MessageTab key={message.username} message={message} />
-            ))}
-          </div>
-        </ScrollArea>
-        <Link
-          href={"/dashboard/messages"}
-          className="rounded-2xl border-2 px-4 py-2 transition-colors duration-500 hover:bg-muted-foreground d"
-        >
-          Show All
-        </Link>
       </div>
     </div>
   );

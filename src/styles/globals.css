@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 224 71% 4%;
+    --background: 0 0% 0%;
     --foreground: 0 0% 100%;
 
     --card: 0 0% 100%;
@@ -81,4 +81,8 @@
     background: rgb(124, 99, 0);
     background: radial-gradient(circle, rgba(124, 99, 0, 1) 0%, rgba(2, 0, 36, 1) 100%);
   }
+}
+
+.sidebar{
+  transform: translate(-50%);
 }

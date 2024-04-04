@@ -5,6 +5,7 @@ import {
   ChevronLeftCircle,
   Home,
   LogOut,
+  Menu,
   MessageCircle,
   TrendingUp,
   User2,
@@ -37,17 +38,25 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="z-50 h-full p-4 md:p-0">
-      <div
-        onClick={() => setisClicked(!isClicked)}
-        className="fixed left-4 top-4 z-50 h-10 w-10 md:hidden"
-      >
-        <Image src={"/logo.svg"} alt={""} fill />
+    <div className="fixed z-50 h-fit  w-full md:hidden md:p-0">
+      <div className="flex w-full items-center justify-between bg-black px-5 pb-2 pt-7">
+        <div
+          onClick={() => setisClicked(!isClicked)}
+          className="relative z-50 flex h-10 w-10 items-center justify-center md:hidden"
+        >
+          <Menu className="" />
+        </div>
+        <Link className=" relative z-50 h-10 w-10 md:hidden" href={"/"}>
+          <Image src={"/logo.svg"} alt={""} fill />
+        </Link>
+        <div className=" relative z-50 h-10 w-10 opacity-0 md:hidden">
+          <Image src={"/"} alt={""} fill className="rounded-full" />
+        </div>
       </div>
       <div
         ref={ref}
         className={cn(
-          "fixed left-0  top-0 z-50 h-full  w-60 border-opacity-50 drop-shadow-[0_35px_35px_rgba(1,1,1,1.25)] backdrop-blur-3xl transition-all duration-300",
+          "fixed left-0  top-0 z-50 h-full  w-60 border-opacity-50 shadow-md shadow-primary drop-shadow-[0_35px_35px_rgba(1,1,1,1.25)] backdrop-blur-3xl transition-all duration-300",
           {
             ["-translate-x-full opacity-0 md:translate-x-0 md:scale-100 md:opacity-100"]:
               isClicked,
@@ -57,19 +66,16 @@ export default function Sidebar() {
         onMouseEnter={() => setisHovering(false)}
         onMouseLeave={() => setisHovering(true)}
       >
-        <div className="flex  h-full flex-col bg-[#1F2937] bg-opacity-50 pb-5 pt-20 backdrop-blur-3xl">
+        <div className="flex  h-full flex-col  pb-5 pt-20 backdrop-blur-3xl">
           <div id="logo" className="flex items-center justify-center space-x-3">
             <Image
               src={"/logo.svg"}
               alt={""}
               width={50}
               height={50}
-              className={cn(
-                "rounded-full  bg-[#1F2937] bg-opacity-50 backdrop-blur-3xl",
-                {
-                  [""]: isClicked,
-                },
-              )}
+              className={cn("rounded-full   backdrop-blur-3xl", {
+                [""]: isClicked,
+              })}
             />
             {true && (
               <p className={cn("text-2xl font-bold text-primary")}>BuzzHive</p>

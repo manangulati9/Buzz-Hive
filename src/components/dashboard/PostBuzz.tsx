@@ -1,6 +1,6 @@
 "use client";
 
-import EmojiPicker, { Theme } from "emoji-picker-react";
+import EmojiPicker, { type Theme } from "emoji-picker-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,14 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { EarthIcon, Smile } from "lucide-react";
+import { Smile } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { Textarea } from "../ui/textarea";
@@ -31,6 +24,7 @@ import { useEdgeStore } from "@/lib/EdgestoreProvider";
 import { cn } from "@/lib/utils";
 import { revalidateRoute } from "@/lib/actions";
 import { unstable_noStore as noStore } from "next/cache";
+import { BackgroundGradient } from "../ui/background-gradient";
 
 type FileUpload =
   | {
@@ -107,7 +101,7 @@ function PostBuzz() {
   };
 
   return (
-    <div>
+    <BackgroundGradient className="flex w-full max-w-md justify-between rounded-[22px] bg-black p-4 backdrop-blur-3xl dark:bg-zinc-900  md:max-w-3xl md:p-10">
       <Dialog
         open={showModal}
         onOpenChange={(newVal) => {
@@ -115,8 +109,8 @@ function PostBuzz() {
           setFileStates([]);
         }}
       >
-        <div className="mx-auto my-10  flex h-fit w-[18rem] max-w-xl  flex-col justify-between space-y-4 rounded-lg bg-[#1F2937] bg-opacity-50 px-2 py-2 drop-shadow-[0_0_35px_rgba(1,1,1,1.25)] md:w-full md:backdrop-blur-3xl">
-          <div className="flex flex-col space-y-2">
+        <div className="w-full">
+          <div className="flex w-full flex-col space-y-2">
             <div className="flex items-center justify-start space-x-2 text-center">
               <div className="relative h-14 w-14 rounded-full">
                 <Image src={"/logo.svg"} alt={""} fill />
@@ -124,35 +118,8 @@ function PostBuzz() {
               <p className="text-base font-bold">What&apos; Buzzin?</p>
             </div>
 
-            <div className="pl-8 md:pl-16">
-              <Select>
-                <SelectTrigger className="w-fit rounded-xl bg-primary text-xs text-[#322904] transition-colors duration-500 hover:bg-primary md:text-base">
-                  <SelectValue
-                    placeholder="Select privacy"
-                    className="placeholder:font-bold"
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="EveryOne">
-                    <div className="flex items-center space-x-3  text-[#322904]">
-                      <EarthIcon className="text-[#322904]" />
-                      <p className="font-bold">Everyone can comment</p>
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="OnlyFollowers">
-                    <div className="flex items-center space-x-3  text-[#322904]">
-                      <EarthIcon className="text-[#322904]" />
-                      <p className="font-bold">Only followers</p>
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="OnlyYouFollow">
-                    <div className="flex items-center space-x-3  text-[#322904]">
-                      <EarthIcon className="text-[#322904]" />
-                      <p className="font-bold">Only people you follow</p>
-                    </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+            <div className=" flex h-fit items-center justify-center text-center  text-xl  text-muted-foreground md:text-3xl">
+              Create a new Buzz!
             </div>
 
             <div className="flex items-center justify-between border-t-2 border-yellow-400 p-2 pl-10 md:pl-16 ">
@@ -261,7 +228,7 @@ function PostBuzz() {
           </DialogContent>
         </div>
       </Dialog>
-    </div>
+    </BackgroundGradient>
   );
 }
 

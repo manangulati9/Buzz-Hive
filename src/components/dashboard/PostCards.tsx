@@ -13,7 +13,6 @@ import {
 } from "../ui/carousel";
 import type { RouterOutputs } from "@/trpc/shared";
 import Link from "next/link";
-import DeleteButton from "../DeleteButton";
 
 type PostCardProps = {
   post: RouterOutputs["posts"]["postByUserId"][number];
@@ -22,38 +21,33 @@ type PostCardProps = {
 function PostCards({ post }: PostCardProps) {
   return (
     <div>
-      <BackgroundGradient className="max-w-md rounded-[22px] bg-black p-4 backdrop-blur-3xl dark:bg-zinc-900 md:max-w-2xl md:p-10">
-        <div className="flex items-center justify-between">
-          <Link
-            className="flex items-center gap-2"
-            href={`/profile/${post.userData.id}`}
-          >
-            <div className="relative h-12 w-12 rounded-full">
-              <Image
-                src={post.userData.image ?? "/logo.svg"}
-                alt={""}
-                fill
-                className="rounded-full"
-              />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <p className="text-base text-primary dark:text-neutral-200  sm:text-xl">
-                  {post.userData.name}
-                </p>
-                <div className="scale-75 md:scale-100">
-                  {post.userData.verified && <LucideBadgeCheck color="gold" />}
-                </div>
-              </div>
-              <p className="text-base text-muted-foreground dark:text-neutral-200  sm:text-xl">
-                {`@${post.userData.username}`}
-              </p>
-            </div>
-          </Link>
-          <div className="hover:cursor-pointer">
-            <DeleteButton postId={post.id} />
+      <BackgroundGradient className="max-w-md rounded-[22px] bg-black p-4 backdrop-blur-3xl dark:bg-zinc-900 md:max-w-3xl md:p-10">
+        <Link
+          className="flex items-center gap-2"
+          href={`/profile/${post.userData.id}`}
+        >
+          <div className="relative h-12 w-12 rounded-full">
+            <Image
+              src={post.userData.image ?? "/logo.svg"}
+              alt={""}
+              fill
+              className="rounded-full"
+            />
           </div>
-        </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <p className="text-base text-primary dark:text-neutral-200  sm:text-xl">
+                {post.userData.name}
+              </p>
+              <div className="scale-75 md:scale-100">
+                {post.userData.verified && <LucideBadgeCheck color="gold" />}
+              </div>
+            </div>
+            <p className="text-base text-muted-foreground dark:text-neutral-200  sm:text-xl">
+              {`@${post.userData.username}`}
+            </p>
+          </div>
+        </Link>
         <Link href={`/dashboard/posts/${post.id}`}>
           {post.imagesArray && post.imagesArray.length > 0 && (
             <Carousel className="container flex h-[15rem] w-[13rem] items-center justify-center object-cover md:h-[15rem] md:w-[25rem]">
